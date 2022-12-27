@@ -16,3 +16,41 @@
 	background-attachment: fixed;
 	padding: 20px;
 }
+
+.container {
+	background-color:rgba(255,255,255,.4);
+	max-width:250px;
+}
+
+.gallery {
+	display: flex;
+	flex-wrap:wrap;
+	gap: 20px;
+	justify-content: center;
+	padding: 20px 0px;
+}
+
+.card {
+	width: 250px;
+	
+}
+
+.card-img {
+	object-fit: cover;
+}
+
+.card-content{
+	background-color: rgba(0, 0, 0, 0.261);
+	color: rgba(255, 255, 255, 0.768);
+	line-height: 1.2;
+}
+
+.card-content p:first-of-type {
+	font-size: 16px;
+	color: rgba(255, 166, 0, 0.558);
+}
+
+.card-content p {
+	font-size: 14px;
+	letter-spacing: .5px;
+}

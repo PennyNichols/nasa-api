@@ -1,12 +1,15 @@
 import './App.css';
-import Form from './components/form/Form';
+import Gallery from './components/gallery/Gallery';
+import SearchForm from './components/searchForm/SearchForm';
 import ImageProvider from './context/ImageContext';
 
 function App() {
   return (
     <ImageProvider>
       <div className="page">
-        <Form/>
+        <SearchForm/>
+        <Gallery/>
+      
       </div>
     </ImageProvider>
   );
