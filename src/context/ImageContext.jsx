@@ -1,11 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import axios from 'axios';
 
-export const AppContext = createContext();
+export const ImageContext = createContext();
 
 
 
-const AppProvider = (props) => {
+const ImageProvider = (props) => {
   const [images, setImages] = useState([]);
   const [roverName, setRoverName] = useState("curiosity");
   const [date, setDate] = useState('')
@@ -23,10 +23,10 @@ const AppProvider = (props) => {
 
   }
   return (
-    <AppContext.Provider value={ {images, roverName, setRoverName, date, setDate, camera, setCamera} }>
+    <ImageContext.Provider value={ {images, roverName, setRoverName, date, setDate, camera, setCamera} }>
       { props.children}
-    </AppContext.Provider>
+    </ImageContext.Provider>
   )
  }
 
- export default AppProvider
+ export default ImageProvider
