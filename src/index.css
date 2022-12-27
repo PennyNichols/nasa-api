@@ -17,9 +17,31 @@
 	padding: 20px;
 }
 
-.container {
+.form-container {
 	background-color:rgba(255,255,255,.4);
-	max-width:250px;
+	padding: 20px;
+}
+
+.form-select {
+	margin-bottom: 40px;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+#rover-selection, #date-selection {
+	font-size: 20px;
+}
+
+#date-input {
+	padding: 3px 8px;
+}
+
+.date-options {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	align-items: center
 }
 
 .gallery {

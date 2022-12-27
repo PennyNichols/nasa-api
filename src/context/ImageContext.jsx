@@ -23,25 +23,42 @@ const ImageProvider = (props) => {
       setDate(`earth_date=${manifest?.max_date}`)
       setSol(`sol=${manifest?.max_sol}`)
     })
-  }, [roverName])
+  }, [roverName, date])
 
   useEffect(() => { 
     axios.get(imageUrl).then((response) => {
       setImages(response?.data.photos);
     })
-  }, [roverName])
+  }, [roverName, date])
 
   const handleRover = (event, newRoverName) =>{
     setRoverName(newRoverName)
+    setDate(manifest?.max_date);
   }
 
   const handleDate = (event, newDateType) => {
     setDateType(newDateType)
   }
 
-  console.log(images)
+  function formatEarthDate(value) {
+    if (!value) return value;
+    const num = value.replace(/[^\d]/g, "");
+    const numLength = num.length;
+    if (numLength < 5) return num;
+    if (numLength < 7) {
+      return `${num.slice(0, 4)}-${num.slice(4)}`;
+    }
+    return `${num.slice(0, 4)}-${num.slice(4, 6)}-${num.slice(6, 8)}`;
+  }
+
+  const handleEarthDate = (e) => {
+    const formattedDate = formatEarthDate(e.target.value);
+    setDate(`earth_date=${formattedDate}`)
+  }
+
+  console.log(date)
   return (
-    <ImageContext.Provider value={ {imageUrl, images, roverName, setRoverName, dateType, handleDate, date, setDate, camera, setCamera, handleRover} }>
+    <ImageContext.Provider value={ {imageUrl, images, manifest, roverName, setRoverName, dateType, handleDate, date, setDate, camera, setCamera, handleRover, handleEarthDate} }>
       { props.children}
     </ImageContext.Provider>
   )

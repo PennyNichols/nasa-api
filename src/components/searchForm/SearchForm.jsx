@@ -7,7 +7,7 @@ import DateSelect from './DateSelect'
 const SearchForm = () => {
 
   return (
-    <Container className='container' maxWidth='sm' >
+    <Container className='form-container' maxWidth='sm' >
         <RoverSelect/>
         <DateSelect/>
     </Container>
