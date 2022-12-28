@@ -11,6 +11,7 @@ const DateSelect = () => {
 			<FormLabel id="date-selection">Select a Date</FormLabel>
 			<div className="date-options">
 				<ToggleButtonGroup
+                    className='toggle-group'
 					value={dateType}
 					exclusive
 					onChange={handleDate}

@@ -13,8 +13,9 @@ const ImageProvider = (props) => {
   const [date, setDate] = useState('')
   const [sol, setSol] = useState('')
   const [camera, setCamera] = useState('')
+  const [page, setPage] = useState('&page=1')
   const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/rovers";
-	const imageUrl = `${baseUrl}/${roverName}/photos?${date || sol}${camera}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
+	const imageUrl = `${baseUrl}/${roverName}/photos?${date || sol}${camera}${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
   const manifestUrl = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${process.env.REACT_APP_NASA_API_KEY}`
 
   useEffect(() => { 

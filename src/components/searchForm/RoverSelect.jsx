@@ -11,6 +11,7 @@ const RoverSelect = () => {
 				Select a Rover
 			</FormLabel>
 			<ToggleButtonGroup
+				className='toggle-group'
 				value={roverName}
 				exclusive
 				onChange={handleRover}
