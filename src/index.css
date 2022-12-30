@@ -29,24 +29,19 @@
 	align-items: center;
 }
 
-
-
-.toggle-group{
-	background-color:rgba(159, 104, 3, 0.172);
+.toggle-group {
+	background-color: rgba(159, 104, 3, 0.172);
 }
-
-
-
 
 #date-input {
 	padding: 3px 8px;
-	background-color:rgba(255, 166, 0, 0.206);
+	background-color: rgba(255, 166, 0, 0.206);
 	border-radius: 4px;
 	color: #ffa6009e;
 }
 
-.MuiFormHelperText-root{
-	color:#ffa6008e !important;
+.MuiFormHelperText-root {
+	color: #ffa6008e !important;
 }
 
 .date-options {
@@ -54,6 +49,11 @@
 	flex-direction: column;
 	gap: 20px;
 	align-items: center;
+}
+
+.spaced {
+	display: flex;
+	justify-content: space-around;
 }
 
 .gallery {

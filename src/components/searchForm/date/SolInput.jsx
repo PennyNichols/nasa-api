@@ -11,7 +11,7 @@ const SolInput = () => {
 			variant="outlined"
       color='warning'
 			value={sol?.slice(4)}
-			helperText={`Number between 1 & ${manifest?.max_sol}`}
+			helperText={`Number between 0 & ${manifest?.max_sol}`}
 			onChange={(e) => handleSolDate(e)}
 		/>
 	);

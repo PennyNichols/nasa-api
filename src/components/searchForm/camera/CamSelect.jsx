@@ -23,6 +23,7 @@ const CamSelect = () => {
 				className="toggle-group"
 				value={cam}
 				color="primary"
+                orientation='vertical'
 				exclusive
 				onChange={handleCam}
 				aria-label="Mars Rover Camera Selection"
@@ -34,7 +35,27 @@ const CamSelect = () => {
 						aria-label={option}
 						style={{ color: "#ffa6009e" }}
 					>
-						{option === "MAST" ? "Mast" : option === "NAVCAM" ? "navigation" : ""}
+						{option === "MAST"
+							? "Mast"
+							: option === "NAVCAM"
+							? "navigation"
+							: option === "CHEMCAM"
+							? "chemistry"
+							: option === "FHAZ"
+							? "front hazard"
+							: option === "MAHLI"
+							? "mars hand lens"
+							: option === "RHAZ"
+							? "rear hazard"
+                            : option === 'PANCAM'
+                            ? 'panoramic'
+                            : option === 'ENTRY'
+                            ? 'entry, descent, and landing'
+                            : option === 'MINITES'
+                            ? 'thermal emission spectrometer'
+                            : option === 'MARDI'
+                            ? 'mars descent'
+							: ""}
 					</ToggleButton>
 				))}
 			</ToggleButtonGroup>

@@ -5,16 +5,21 @@ import AppPagination from "./AppPagination";
 import ImageCard from "./ImageCard";
 
 const Gallery = () => {
-	const { images } = useContext(ImageContext);
+	const { allImages, cam, images } = useContext(ImageContext);
 
+	// const filter = () => {}
+	const filteredImages = allImages?.filter((image) => image.camera.name === cam);
+	console.log(filteredImages.length);
 	return (
 		<>
 			<div className="gallery">
-				{images?.map((image) => (
-					<ImageCard image={image} key={image.id} />
-				))}
+				{filteredImages.length > 0
+					? filteredImages?.map((image) => (
+							<ImageCard image={image} key={image.id} />
+					  ))
+					: images?.map((image) => <ImageCard image={image} key={image.id} />)}
 			</div>
-			<AppPagination/>
+			<AppPagination />
 		</>
 	);
 };

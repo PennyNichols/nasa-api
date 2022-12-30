@@ -13,7 +13,7 @@ const ImageProvider = (props) => {
   const [maxSol, setMaxSol] = useState('')
 	const [date, setDate] = useState();
 	const [sol, setSol] = useState();
-	const [cam, setCam] = useState();
+	const [cam, setCam] = useState(null);
 	const [camSelections, setCamSelections] = useState([]);
 	const [page, setPage] = useState("&page=1");
   const [pageCount, setPageCount] = useState('')

@@ -4,6 +4,7 @@ import { ImageContext } from '../../context/ImageContext'
 import RoverSelect from './RoverSelect'
 import DateSelect from './date/DateSelect'
 import CamSelect from './camera/CamSelect'
+import SavedSearches from '../savedSearches/SavedSearches'
 
 const SearchForm = () => {
 
@@ -12,6 +13,7 @@ const SearchForm = () => {
         <RoverSelect/>
         <DateSelect/>
         <CamSelect/>
+        <SavedSearches/>
     </Container>
   )
 }
