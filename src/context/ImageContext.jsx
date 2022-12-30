@@ -7,11 +7,13 @@ const ImageProvider = (props) => {
 	const [manifest, setManifest] = useState({});
 	const [images, setImages] = useState([]);
   const [allImages, setAllImages] = useState([]);
-	const [roverName, setRoverName] = useState("");
-	const [dateType, setDateType] = useState("");
-	const [date, setDate] = useState("");
-	const [sol, setSol] = useState("");
-	const [cam, setCam] = useState("");
+	const [roverName, setRoverName] = useState('curiosity');
+	const [dateType, setDateType] = useState("earth_date");
+  const [maxDate, setMaxDate] = useState('')
+  const [maxSol, setMaxSol] = useState('')
+	const [date, setDate] = useState();
+	const [sol, setSol] = useState();
+	const [cam, setCam] = useState();
 	const [camSelections, setCamSelections] = useState([]);
 	const [page, setPage] = useState("&page=1");
   const [pageCount, setPageCount] = useState('')
@@ -21,7 +23,7 @@ const ImageProvider = (props) => {
 		date || sol
 	}${cam}${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
   const allImagesUrl = `${baseUrl}/${roverName}/photos?${
-		date || sol
+		sol || date
 	}${cam}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
 	const manifestUrl = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${process.env.REACT_APP_NASA_API_KEY}`;
 
@@ -29,37 +31,63 @@ const ImageProvider = (props) => {
 
 	const dateTypeOptions = ["earth_date", "sol"];
 
+  const fetchManifest = async () => {
+    const {data} = await axios.get(manifestUrl);
+    const photos = data.photo_manifest.photos
+    const maxDate = data.photo_manifest.max_date
+    const sol = data.photo_manifest.max_sol
+    const day = photos.find((item) => item.earth_date === maxDate)
+    const cams = day.cameras
+    setManifest(data.photo_manifest)
+    setDate(`earth_date=${maxDate}`);
+    setCamSelections(cams)
+  }
+  
 	useEffect(() => {
-		axios.get(manifestUrl).then((response) => {
-			setManifest(response?.data.photo_manifest);
-			setDate(`earth_date=${manifest?.max_date}`);
-			setSol(`sol=${manifest?.max_sol}`);
-			let days = manifest.photos.map(function (photo) {
-				return photo;
-			});
-			console.log(days);
-			// const test = days.find(function(day, index) {
-			//   if (day.earth_date == date.slice(11)){
-			//     return day;
-			//   }
-			// })
-			// console.log(test.sol)
-		});
+    fetchManifest()
+	}, [roverName]);
+  console.log(dateType)
+
+  const fetchCameras = async () => {
+    const {data} = await axios.get(manifestUrl);
+    const photos = data.photo_manifest.photos
+    const setDay = (dateType) => {
+      if (dateType === 'sol'){
+        return photos.find((item) => item.sol === date.slice(4))
+      } else {
+        return photos.find((item) => item.earth_date === date.slice(11))
+      }
+    }
+    const day = setDay(dateType)
+
+    console.log(day)
+    const cams = day.cameras
+    console.log(cams)
+    setCamSelections(cams)
+  }
+  
+	useEffect(() => {
+    fetchManifest()
 	}, [roverName]);
 
+  const fetchImages = async()=>{
+    const {data} = await axios.get(imageUrl)
+    setImages(data.photos)
+  }
+
+  const fetchAllImages = async()=>{
+    const {data} = await axios.get(allImagesUrl)
+    setAllImages(data.photos)
+    setPageCount(Math.ceil(data.photos.length / 25 ))
+  }
+
 	useEffect(() => {
-		axios.get(imageUrl).then((response) => {
-			setImages(response?.data.photos);
-		});
-		axios.get(allImagesUrl).then((response) => {
-			setAllImages(response?.data.photos);
-		});
+		fetchAllImages()
+		fetchImages()
+    fetchCameras()
     
-	}, [roverName, date, cam, page]);
-console.log(manifest)
-  useEffect(()=>{
-    setPageCount(Math.ceil(allImages?.length / 25))
-  })
+	}, [roverName, date, cam, page, dateType, sol]);
+  
 
 	const handleRover = (event, newRoverName) => {
 		setRoverName(newRoverName);
@@ -70,7 +98,6 @@ console.log(manifest)
 		setDateType(newDateType);
 	};
 
-  console.log(date)
 	function formatEarthDate(value) {
 		if (!value) return value;
 		const num = value.replace(/[^\d]/g, "");
@@ -94,7 +121,7 @@ console.log(manifest)
 			alert(`Please enter a valid month between 1 and 12`);
 		}
 		if (
-			num.slice(4, 6) == "01" ||
+			num.slice(4, 6) === "01" ||
 			num.slice(4, 6) == "03" ||
 			num.slice(4, 6) == "05" ||
 			num.slice(4, 6) == "07" ||
@@ -140,17 +167,17 @@ console.log(manifest)
 	const handleSolDate = (e) => {
 		const formattedDate = formatSolDate(e.target.value);
 		setDate(`sol=${formattedDate}`);
+
 	};
 
 	const handleCam = (event, newCam) => {
 		setCam(newCam);
-		setDate(manifest?.max_date);
 	};
 
+ 
 	const handlePage = (e) => {
 		setPage(`&page=${e.target.textContent}`);
 		window.scroll(0, 0);
-    console.log(page)
 	};
 
 	return (
@@ -167,6 +194,7 @@ console.log(manifest)
 				handleDate,
 				date,
 				setDate,
+        camSelections,
 				cam,
 				setCam,
 				handleRover,

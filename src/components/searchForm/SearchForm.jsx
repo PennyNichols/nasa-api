@@ -3,6 +3,7 @@ import {Container} from '@mui/material'
 import { ImageContext } from '../../context/ImageContext'
 import RoverSelect from './RoverSelect'
 import DateSelect from './date/DateSelect'
+import CamSelect from './camera/CamSelect'
 
 const SearchForm = () => {
 
@@ -10,6 +11,7 @@ const SearchForm = () => {
     <Container className='form-container' maxWidth='sm' >
         <RoverSelect/>
         <DateSelect/>
+        <CamSelect/>
     </Container>
   )
 }

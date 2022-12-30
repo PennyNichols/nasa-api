@@ -32,14 +32,17 @@
 
 
 .toggle-group{
-	background-color:rgba(255, 166, 0, 0.172);
+	background-color:rgba(159, 104, 3, 0.172);
 }
+
+
+
 
 #date-input {
 	padding: 3px 8px;
-	background-color:rgba(255, 166, 0, 0.223);
+	background-color:rgba(255, 166, 0, 0.206);
 	border-radius: 4px;
-	color: white;
+	color: #ffa6009e;
 }
 
 .MuiFormHelperText-root{
