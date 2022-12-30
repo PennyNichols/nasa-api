@@ -14,11 +14,11 @@
 	height: 100%;
 	background-size: cover;
 	background-attachment: fixed;
-	padding: 20px;
+	padding: 40px 0;
 }
 
 .form-container {
-	background-color: rgba(0, 0, 0, 0.457);
+	background-color: #00000075;
 	padding: 20px;
 }
 
@@ -29,14 +29,10 @@
 	align-items: center;
 }
 
-#rover-selection,
-#date-selection {
-	font-size: 20px;
-	color:rgba(255, 166, 0, 0.558);
-}
+
 
 .toggle-group{
-	background-color:rgba(255, 166, 0, 0.223);
+	background-color:rgba(255, 166, 0, 0.172);
 }
 
 #date-input {
@@ -47,7 +43,7 @@
 }
 
 .MuiFormHelperText-root{
-	color:rgba(255, 166, 0, 0.558) !important;
+	color:#ffa6008e !important;
 }
 
 .date-options {
@@ -71,6 +67,7 @@
 
 .card-img {
 	object-fit: cover;
+	width: 250px;
 }
 
 .card-content {
@@ -93,10 +90,9 @@
 	position: fixed;
 	bottom: 0;
 	z-index: 200;
-	background-color: rgba(0, 0, 0, 0.62);
 	padding: 10px 80px;
-	color: rgba(255, 166, 0, 0.558);
-	width: 100%;
+	background-color: rgba(150, 98, 2, 0.708);
+	width: 100vw;
 }
 
 .pagination-wrapper {

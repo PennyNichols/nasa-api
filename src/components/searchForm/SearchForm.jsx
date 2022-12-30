@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import {Container} from '@mui/material'
 import { ImageContext } from '../../context/ImageContext'
 import RoverSelect from './RoverSelect'
-import DateSelect from './DateSelect'
+import DateSelect from './date/DateSelect'
 
 const SearchForm = () => {
 

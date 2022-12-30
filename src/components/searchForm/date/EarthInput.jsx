@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
+import { orange } from "@mui/material/colors";
 import React, { useContext } from "react";
-import { ImageContext } from "../../context/ImageContext";
+import { ImageContext } from "../../../context/ImageContext";
 
 const EarthInput = () => {
 	const { handleEarthDate, date, manifest } = useContext(ImageContext);

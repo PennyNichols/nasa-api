@@ -1,32 +1,38 @@
-import {FormLabel, ToggleButton, ToggleButtonGroup } from "@mui/material";
+import {FormLabel, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
 import React, { useContext } from "react";
 import { ImageContext } from "../../context/ImageContext";
 
 const RoverSelect = () => {
-	const { handleRover, roverName } = useContext(ImageContext);
+	const { handleRover, roverName, roverOptions } = useContext(ImageContext);
+
+	const theme = useTheme();
+	// console.log(theme)
 
 	return (
 		<div className='form-select'>
 			<FormLabel id="rover-selection">
-				Select a Rover
+				<Typography 
+					color='primary'
+					variant='h6'
+				>
+					Select a Rover
+				</Typography>
 			</FormLabel>
 			<ToggleButtonGroup
 				className='toggle-group'
 				value={roverName}
+				color='warning'
 				exclusive
 				onChange={handleRover}
 				aria-label="Mars Rover Selection"
         		aria-labelledby='rover-selection'
 			>
-				<ToggleButton value="curiosity" aria-label="curiosity">
-					Curiosity
-				</ToggleButton>
-				<ToggleButton value="opportunity" aria-label="opportunity">
-					Opportunity
-				</ToggleButton>
-				<ToggleButton value="spirit" aria-label="spirit">
-					Spirit
-				</ToggleButton>
+				{roverOptions?.map((item, index)=>
+					<ToggleButton value={item} key={index}aria-label={item}
+					>
+						{item}
+					</ToggleButton>
+				)}
 			</ToggleButtonGroup>
 		</div>
 	);

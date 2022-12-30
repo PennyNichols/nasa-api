@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 import React, { useContext } from "react";
-import { ImageContext } from "../../context/ImageContext";
+import { ImageContext } from "../../../context/ImageContext";
 
 const SolInput = () => {
 	const { handleSolDate, sol, manifest } = useContext(ImageContext);
