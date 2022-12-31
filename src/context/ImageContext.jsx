@@ -24,12 +24,8 @@ const ImageProvider = (props) => {
 	const [currentDate, setCurrentDate] = useState();
 	const [savedSearches, setSavedSearches] = useState([]);
 	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/rovers";
-	const imageUrl = `${baseUrl}/${roverName}/photos?${
-		date || sol
-	}${cam}${page}&api_key=${key}`;
-	const allImagesUrl = `${baseUrl}/${roverName}/photos?${
-		date || sol
-	}${cam}&api_key=${key}`;
+	const imageUrl = `${baseUrl}/${roverName}/photos?${date}${cam}${page}&api_key=${key}`;
+	const allImagesUrl = `${baseUrl}/${roverName}/photos?${date}${cam}&api_key=${key}`;
 	const manifestUrl = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${key}`;
 
 	const roverOptions = ["curiosity", "opportunity", "spirit"];
@@ -38,11 +34,10 @@ const ImageProvider = (props) => {
 
 	const fetchManifest = async () => {
 		const { data } = await axios.get(manifestUrl);
-		const results = data.photo_manifest
-		const photos = results.photos;
-		const maxEarth = results.max_date;
-		const maxMars = results.max_sol;
-		const day = photos.find((item) => item.earth_date === maxDate);
+		const photos = data.photo_manifest.photos;
+		const maxEarth = data.photo_manifest.max_date;
+		const maxMars = data.photo_manifest.max_sol;
+		const day = photos.find((item) => item.earth_date === maxEarth);
 		const cams = day.cameras;
 		setManifest(data.photo_manifest);
 		setMaxDate(maxEarth)
@@ -55,19 +50,20 @@ const ImageProvider = (props) => {
 	useEffect(() => {
 		fetchManifest();
 	}, [roverName]);
-	// console.log(dateType)
+	console.log(manifest)
+
+
 	useEffect(()=>{
 		if (dateType === 'earth_date'){
 			setDate(`earth_date=${earthDate}`)
 		} else {
 			setDate(`sol=${sol}`)
 		}
-	})
+	},[earthDate, sol, date])
 
 	const fetchCameras = async () => {
 		const photos = manifest.photos;
 		
-		// console.log(currentDate)
 		const setDay = (dateType) => {
 			if (dateType === "sol") {
 				return photos?.find((item) => item.sol === sol);
@@ -78,9 +74,9 @@ const ImageProvider = (props) => {
 		const day = setDay(dateType);
 
 		// console.log(day)
-		const cams = day.cameras;
 		// console.log(cams)
-		setCamSelections(cams);
+		console.log(day.cameras)
+		// setCamSelections(cams);
 	};
 
 	useEffect(()=>{
@@ -98,7 +94,6 @@ const ImageProvider = (props) => {
 		setAllImages(data?.photos);
 		setPageCount(Math.ceil(data?.photos.length / 25))
 	};
-	console.log(allImages)
 
 	useEffect(()=>{
 		fetchImages();
@@ -125,10 +120,10 @@ const ImageProvider = (props) => {
 	const handleDate = (event) => {
 		if (event.target.value === "sol") {
 			setDateType("sol");
-			setDate(`sol=${maxSol}`);
+			setDate(`sol=${sol}`);
 		} else if (event.target.value === "earth_date") {
 			setDateType("earth_date");
-			setDate(`date=${maxDate}`);
+			setDate(`date=${earthDate}`);
 		}
 	};
 	// console.log(dateType)
@@ -203,8 +198,8 @@ const ImageProvider = (props) => {
 		setDate(`sol=${formattedDate}`);
 	};
 
-	const handleCam = (event, newCam) => {
-		setCam(newCam);
+	const handleCam = (e) => {
+		setCam(e.target.value);
 		fetchImages();
 		fetchAllImages();
 	};
@@ -246,12 +241,10 @@ const ImageProvider = (props) => {
 	};
 
 	const handleSavedClick = (e) => {
-		console.log(e.target.parentElement);
 		const currentItem = savedSearches.splice(
 			e.target.parentElement.parentElement.id,
 			1
 		);
-		console.log(currentItem);
 		setCam(currentItem[0].camera);
 		setDateType(currentItem[0].dateType);
 		setDate(currentItem[0].date);

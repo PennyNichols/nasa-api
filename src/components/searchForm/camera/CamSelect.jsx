@@ -27,7 +27,7 @@ const CamSelect = () => {
 				color="primary"
                 orientation='vertical'
 				exclusive
-				onChange={handleCam}
+				onChange={(e)=>handleCam(e)}
 				aria-label="Mars Rover Camera Selection"
 			>
 				{camSelections?.map((option, index) => (
