@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import {v4} from 'uuid';
 import axios from "axios";
 
 export const ImageContext = createContext();
@@ -18,6 +19,7 @@ const ImageProvider = (props) => {
 	const [page, setPage] = useState("&page=1");
   const [pageCount, setPageCount] = useState('')
 	const [currentDate, setCurrentDate] = useState();
+  const [savedSearches, setSavedSearches] = useState([]);
 	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/rovers";
 	const imageUrl = `${baseUrl}/${roverName}/photos?${
 		date || sol
@@ -46,7 +48,7 @@ const ImageProvider = (props) => {
 	useEffect(() => {
     fetchManifest()
 	}, [roverName]);
-  console.log(dateType)
+  // console.log(dateType)
 
   const fetchCameras = async () => {
     const {data} = await axios.get(manifestUrl);
@@ -60,9 +62,9 @@ const ImageProvider = (props) => {
     }
     const day = setDay(dateType)
 
-    console.log(day)
+    // console.log(day)
     const cams = day.cameras
-    console.log(cams)
+    // console.log(cams)
     setCamSelections(cams)
   }
   
@@ -81,14 +83,21 @@ const ImageProvider = (props) => {
     setPageCount(Math.ceil(data.photos.length / 25 ))
   }
 
+  const fetchSearches = () => {
+    const searchData = JSON.parse(localStorage.getItem('allSaves')) || [] ;
+    setSavedSearches(searchData)
+  }
+  // console.log(savedSearches)
+
 	useEffect(() => {
+    fetchSearches()
 		fetchAllImages()
 		fetchImages()
     fetchCameras()
     
 	}, [roverName, date, cam, page, dateType, sol]);
   
-
+  
 	const handleRover = (event, newRoverName) => {
 		setRoverName(newRoverName);
 		setDate(manifest?.max_date);
@@ -180,6 +189,33 @@ const ImageProvider = (props) => {
 		window.scroll(0, 0);
 	};
 
+
+  const saveSearch = () => {
+    
+    let entry = {
+      'id': v4(),
+      'rover': roverName,
+      'dateType': dateType,
+      'date': date,
+      'camera': cam,
+    }
+    setSavedSearches([...savedSearches, entry])
+    localStorage.setItem('allSaves', JSON.stringify(savedSearches));
+  }
+  // console.log(savedSearches)
+  // console.log(JSON.parse(localStorage.getItem('allSaves')))
+  const handleDelete = (e) => {
+    console.log(e.target.parentElement.parentElement.parentElement.parentElement.id)
+    console.log(savedSearches)
+    const itemToRemove = savedSearches.splice(e.target.parentElement.parentElement.parentElement.parentElement.id,1)
+    const currentId = itemToRemove[0].id
+    console.log(currentId)
+    const newSavedSearches = savedSearches.filter((savedSearch)=>savedSearch.id !== currentId)
+    console.log(newSavedSearches)
+    localStorage.setItem('allSaves', JSON.stringify(newSavedSearches));
+    // localStorage.allSaves.removeItem(itemToRemove)
+  }
+
 	return (
 		<ImageContext.Provider
 			value={{
@@ -205,6 +241,9 @@ const ImageProvider = (props) => {
         pageCount,
 				handlePage,
         allImages,
+        saveSearch,
+        savedSearches,
+        handleDelete,
 			}}
 		>
 			{props.children}

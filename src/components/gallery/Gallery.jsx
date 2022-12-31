@@ -9,7 +9,7 @@ const Gallery = () => {
 
 	// const filter = () => {}
 	const filteredImages = allImages?.filter((image) => image.camera.name === cam);
-	console.log(filteredImages.length);
+	// console.log(filteredImages.length);
 	return (
 		<>
 			<div className="gallery">
