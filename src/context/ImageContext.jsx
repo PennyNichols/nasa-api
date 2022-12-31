@@ -88,7 +88,6 @@ const ImageProvider = (props) => {
 	const fetchAllImages = async () => {
 		const { data } = await axios.get(allImagesUrl);
 		setAllImages(data.photos);
-		setPageCount(Math.ceil(data.photos.length / 25));
 	};
 
 	useEffect(()=>{
@@ -96,9 +95,15 @@ const ImageProvider = (props) => {
 		fetchImages();
 	},[roverName, date,cam])
 
-	
+	const numberOfPages = () => {
+		setPageCount(Math.ceil(allImages.length / 25))
+	}
 
+	useEffect(()=>{
+		numberOfPages()
+	},[allImages,date])
 
+	console.log(allImages)
 	const fetchSearches = () => {
 		const searchData = JSON.parse(localStorage.getItem("allSaves")) || [];
 		setSavedSearches(searchData);
@@ -219,7 +224,7 @@ const ImageProvider = (props) => {
 		let updatedSaves = [...savedSearches]
 		updatedSaves.unshift(entry)
 		setSavedSearches(updatedSaves);
-		localStorage.setItem("allSaves", JSON.stringify(savedSearches));
+		localStorage.setItem("allSaves", JSON.stringify(updatedSaves));
 	};
 	// console.log(savedSearches)
 	// console.log(JSON.parse(localStorage.getItem('allSaves')))
