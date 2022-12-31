@@ -10,7 +10,7 @@ const SavedSearches = () => {
 		<>
 			<div className="spaced">
 				<Button variant="outlined" color="primary" onClick={()=>setIsOpen(!isOpen)}>
-					View Saved Searches
+					{!isOpen ? 'View Saved Searches' : 'Hide Saved Searches'}
 				</Button>
 				<Button variant="outlined" color="primary" onClick={saveSearch}>
 					Save This Search

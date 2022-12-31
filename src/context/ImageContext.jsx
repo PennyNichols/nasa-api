@@ -42,6 +42,7 @@ const ImageProvider = (props) => {
     const cams = day.cameras
     setManifest(data.photo_manifest)
     setDate(`earth_date=${maxDate}`);
+    setSol(`sol=${sol}`)
     setCamSelections(cams)
   }
   
@@ -105,6 +106,9 @@ const ImageProvider = (props) => {
 
 	const handleDate = (event, newDateType) => {
 		setDateType(newDateType);
+    if (dateType === 'sol'){
+      setDate(manifest?.max_sol)
+    }
 	};
 
 	function formatEarthDate(value) {
@@ -216,6 +220,16 @@ const ImageProvider = (props) => {
     // localStorage.allSaves.removeItem(itemToRemove)
   }
 
+  const handleSavedClick = (event) =>{
+    console.log(event.target.parentElement.parentElement)
+    const currentItem = savedSearches.splice(event.target.parentElement.parentElement.id,1)
+    console.log(currentItem)
+    setCam(currentItem[0].camera)
+    setDateType(currentItem[0].dateType)
+    setDate(currentItem[0].date)
+    setRoverName(currentItem[0].rover)
+  }
+
 	return (
 		<ImageContext.Provider
 			value={{
@@ -244,6 +258,7 @@ const ImageProvider = (props) => {
         saveSearch,
         savedSearches,
         handleDelete,
+        handleSavedClick,
 			}}
 		>
 			{props.children}

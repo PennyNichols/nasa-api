@@ -95,7 +95,7 @@
 	bottom: 0;
 	z-index: 200;
 	padding: 10px 80px;
-	background-color: rgba(150, 98, 2, 0.708);
+	background-color: rgb(150, 98, 2);
 	width: 100vw;
 }
 
