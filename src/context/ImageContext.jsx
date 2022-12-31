@@ -76,7 +76,7 @@ const ImageProvider = (props) => {
 		// console.log(day)
 		// console.log(cams)
 		console.log(day.cameras)
-		// setCamSelections(cams);
+		setCamSelections(day.cameras);
 	};
 
 	useEffect(()=>{
