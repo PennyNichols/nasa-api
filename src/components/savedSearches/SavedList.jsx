@@ -1,5 +1,6 @@
 import { IconButton, List, ListItem, ListItemText } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import React, { cloneElement, useContext } from "react";
 import { ImageContext } from "../../context/ImageContext";
 
@@ -15,24 +16,33 @@ const SavedList = () => {
 	};
 	return (
 		<List>
-			{savedSearches.map((search, id, index) => (
+			{savedSearches.map((search, id) => (
 				<ListItem
-					id={index}
 					key={id}
 					color="primary"
 					secondaryAction={
-						<IconButton
-							color="primary"
-							edge="end"
-							aria-label="delete"
-							onClick={(event) => handleDelete(event)}
-						>
-							<DeleteIcon />
-						</IconButton>
+						<>
+							<IconButton
+								color="primary"
+								edge="end"
+								aria-label="Search Again"
+								onClick={(e) => handleSavedClick(e)}
+							>
+								<RestartAltIcon />
+							</IconButton>
+							<IconButton
+								color="primary"
+								edge="end"
+								aria-label="delete"
+								onClick={(e, id) => handleDelete(e, id)}
+							>
+								<DeleteIcon />
+							</IconButton>
+						</>
 					}
 				>
 					<ListItemText
-						onClick={(event) => handleSavedClick(event)}
+						
 						style={{ color: "#ffa6009e" }}
 						primary={`${search.rover.toUpperCase()} - ${
 							search.dateType === "earth_date"

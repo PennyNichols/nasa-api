@@ -9,8 +9,8 @@ const SolInput = () => {
 			id="date-input"
 			aria-label="Earth Date"
 			variant="outlined"
-      color='warning'
-			value={sol?.slice(4)}
+      		color='warning'
+			value={sol}
 			helperText={`Number between 0 & ${manifest?.max_sol}`}
 			onChange={(e) => handleSolDate(e)}
 		/>

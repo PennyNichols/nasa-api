@@ -6,12 +6,14 @@ import {
 	useTheme,
 } from "@mui/material";
 import React, { useContext } from "react";
+import { useEffect } from "react";
 import { ImageContext } from "../../../context/ImageContext";
 
 const CamSelect = () => {
 	const { camSelections, cam, handleCam } = useContext(ImageContext);
 	const theme = useTheme();
-
+	
+	console.log(cam)
 	return (
 		<div className="form-select">
 			<FormLabel>
