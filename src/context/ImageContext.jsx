@@ -4,15 +4,18 @@ import axios from "axios";
 
 export const ImageContext = createContext();
 
+const key = process.env.REACT_APP_NASA_API_KEY
+
 const ImageProvider = (props) => {
 	const [manifest, setManifest] = useState({});
 	const [images, setImages] = useState([]);
 	const [allImages, setAllImages] = useState([]);
 	const [roverName, setRoverName] = useState("curiosity");
 	const [dateType, setDateType] = useState("earth_date");
-	const [maxDate, setMaxDate] = useState("");
-	const [maxSol, setMaxSol] = useState("");
+	const [maxDate, setMaxDate] = useState();
+	const [maxSol, setMaxSol] = useState();
 	const [date, setDate] = useState();
+	const [earthDate, setEarthDate] = useState();
 	const [sol, setSol] = useState();
 	const [cam, setCam] = useState(null);
 	const [camSelections, setCamSelections] = useState([]);
@@ -23,11 +26,11 @@ const ImageProvider = (props) => {
 	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/rovers";
 	const imageUrl = `${baseUrl}/${roverName}/photos?${
 		date || sol
-	}${cam}${page}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
+	}${cam}${page}&api_key=${key}`;
 	const allImagesUrl = `${baseUrl}/${roverName}/photos?${
-		sol || date
-	}${cam}&api_key=${process.env.REACT_APP_NASA_API_KEY}`;
-	const manifestUrl = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${process.env.REACT_APP_NASA_API_KEY}`;
+		date || sol
+	}${cam}&api_key=${key}`;
+	const manifestUrl = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${key}`;
 
 	const roverOptions = ["curiosity", "opportunity", "spirit"];
 
@@ -35,14 +38,17 @@ const ImageProvider = (props) => {
 
 	const fetchManifest = async () => {
 		const { data } = await axios.get(manifestUrl);
-		const photos = data.photo_manifest.photos;
-		const maxDate = data.photo_manifest.max_date;
-		const maxSol = data.photo_manifest.max_sol;
+		const results = data.photo_manifest
+		const photos = results.photos;
+		const maxEarth = results.max_date;
+		const maxMars = results.max_sol;
 		const day = photos.find((item) => item.earth_date === maxDate);
 		const cams = day.cameras;
 		setManifest(data.photo_manifest);
-		setDate(`earth_date=${maxDate}`);
-		setSol(`sol=${maxSol}`);
+		setMaxDate(maxEarth)
+		setMaxSol(maxMars)
+		setEarthDate(maxEarth);
+		setSol(maxMars);
 		setCamSelections(cams);
 	};
 
@@ -50,21 +56,23 @@ const ImageProvider = (props) => {
 		fetchManifest();
 	}, [roverName]);
 	// console.log(dateType)
+	useEffect(()=>{
+		if (dateType === 'earth_date'){
+			setDate(`earth_date=${earthDate}`)
+		} else {
+			setDate(`sol=${sol}`)
+		}
+	})
 
 	const fetchCameras = async () => {
-		const { data } = await axios.get(manifestUrl);
-		const photos = await data.photo_manifest.photos;
-		if (dateType === 'earth_date'){
-			setCurrentDate(date.slice(11))
-		} else{
-			setCurrentDate(date.slice(4))
-		} 
+		const photos = manifest.photos;
+		
 		// console.log(currentDate)
 		const setDay = (dateType) => {
 			if (dateType === "sol") {
-				return photos?.find((item) => item.sol === date.slice(4));
+				return photos?.find((item) => item.sol === sol);
 			} else {
-				return photos?.find((item) => item.earth_date === date.slice(11));
+				return photos?.find((item) => item.earth_date === earthDate);
 			}
 		};
 		const day = setDay(dateType);
@@ -87,23 +95,18 @@ const ImageProvider = (props) => {
 
 	const fetchAllImages = async () => {
 		const { data } = await axios.get(allImagesUrl);
-		setAllImages(data.photos);
+		setAllImages(data?.photos);
+		setPageCount(Math.ceil(data?.photos.length / 25))
 	};
-
-	useEffect(()=>{
-		fetchAllImages();
-		fetchImages();
-	},[roverName, date,cam])
-
-	const numberOfPages = () => {
-		setPageCount(Math.ceil(allImages.length / 25))
-	}
-
-	useEffect(()=>{
-		numberOfPages()
-	},[allImages,date])
-
 	console.log(allImages)
+
+	useEffect(()=>{
+		fetchImages();
+		fetchAllImages();
+	},[roverName, date,cam,page])
+
+	
+
 	const fetchSearches = () => {
 		const searchData = JSON.parse(localStorage.getItem("allSaves")) || [];
 		setSavedSearches(searchData);
@@ -116,16 +119,16 @@ const ImageProvider = (props) => {
 
 	const handleRover = (event, newRoverName) => {
 		setRoverName(newRoverName);
-		setDate(manifest?.max_date);
+		setDate(maxDate);
 	};
 
 	const handleDate = (event) => {
 		if (event.target.value === "sol") {
 			setDateType("sol");
-			setDate(`sol=${manifest?.max_sol}`);
+			setDate(`sol=${maxSol}`);
 		} else if (event.target.value === "earth_date") {
 			setDateType("earth_date");
-			setDate(`date=${manifest?.max_date}`);
+			setDate(`date=${maxDate}`);
 		}
 	};
 	// console.log(dateType)
@@ -137,13 +140,10 @@ const ImageProvider = (props) => {
 		if (numLength < 5) return num;
 		if (
 			num.slice(0, 4) < manifest.landing_date.slice(0, 4) ||
-			num.slice(0, 4) > manifest.max_date.slice(0, 4)
+			num.slice(0, 4) > maxDate.slice(0,4)
 		) {
 			alert(
-				`Please enter a valid year between ${manifest.landing_date.slice(
-					0,
-					4
-				)} and ${manifest.max_date.slice(0, 4)}`
+				`Please enter a valid year between ${manifest.landing_date.slice(0,4)} and ${maxDate.slice(0, 4)}`
 			);
 		}
 		if (numLength < 7) {
@@ -184,6 +184,7 @@ const ImageProvider = (props) => {
 
 	const handleEarthDate = (e) => {
 		const formattedDate = formatEarthDate(e.target.value);
+		setEarthDate(formattedDate);
 		setDate(`earth_date=${formattedDate}`);
 	};
 
@@ -198,6 +199,7 @@ const ImageProvider = (props) => {
 
 	const handleSolDate = (e) => {
 		const formattedDate = formatSolDate(e.target.value);
+		setSol(formattedDate)
 		setDate(`sol=${formattedDate}`);
 	};
 
