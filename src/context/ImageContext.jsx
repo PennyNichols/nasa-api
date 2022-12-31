@@ -48,7 +48,7 @@ const ImageProvider = (props) => {
 
 	useEffect(() => {
 		fetchManifest();
-	}, [roverName, dateType]);
+	}, [roverName]);
 	// console.log(dateType)
 
 	const fetchCameras = async () => {
@@ -59,7 +59,7 @@ const ImageProvider = (props) => {
 		} else{
 			setCurrentDate(date.slice(4))
 		} 
-		console.log(currentDate)
+		// console.log(currentDate)
 		const setDay = (dateType) => {
 			if (dateType === "sol") {
 				return photos?.find((item) => item.sol === date.slice(4));
@@ -78,6 +78,7 @@ const ImageProvider = (props) => {
 	useEffect(()=>{
 		fetchCameras()
 	},[date])
+
 
 	const fetchImages = async () => {
 		const { data } = await axios.get(imageUrl);
@@ -215,30 +216,32 @@ const ImageProvider = (props) => {
 			camera: cam,
 		};
 		console.log(entry)
-		setSavedSearches([...savedSearches, entry]);
+		let updatedSaves = [...savedSearches]
+		updatedSaves.unshift(entry)
+		setSavedSearches(updatedSaves);
 		localStorage.setItem("allSaves", JSON.stringify(savedSearches));
 	};
 	// console.log(savedSearches)
 	// console.log(JSON.parse(localStorage.getItem('allSaves')))
 	const handleDelete = (e, id) => {
-		console.log(e.target.parentElement.parentElement.parentElement.parentElement);
+		console.log(e.target.parentElement.parentElement.parentElement.parentElement.id);
 		console.log(savedSearches);
-		const itemToRemove = savedSearches.splice(e.target.value, 1);
+		const itemToRemove = savedSearches.splice(e.target.parentElement.parentElement.parentElement.parentElement.id, 1);
 		const currentId = itemToRemove[0].id;
-		console.log(currentId);
+		// console.log(currentId);
 		const newSavedSearches = savedSearches.filter(
 			(savedSearch) => savedSearch.id !== currentId
 		);
-		console.log(newSavedSearches);
+		// console.log(newSavedSearches);
 		localStorage.setItem("allSaves", JSON.stringify(newSavedSearches));
 		// localStorage.allSaves.removeItem(itemToRemove)
 		fetchSearches();
 	};
 
-	const handleSavedClick = (event) => {
-		console.log(event.target.parentElement.parentElement);
+	const handleSavedClick = (e) => {
+		console.log(e.target.parentElement);
 		const currentItem = savedSearches.splice(
-			event.target.parentElement.parentElement.id,
+			e.target.parentElement.parentElement.id,
 			1
 		);
 		console.log(currentItem);

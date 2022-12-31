@@ -16,20 +16,12 @@ const SavedList = () => {
 	};
 	return (
 		<List>
-			{savedSearches.map((search, id) => (
+			{savedSearches.map((search, id, index) => (
 				<ListItem
 					key={id}
+					id={id}
 					color="primary"
 					secondaryAction={
-						<>
-							<IconButton
-								color="primary"
-								edge="end"
-								aria-label="Search Again"
-								onClick={(e) => handleSavedClick(e)}
-							>
-								<RestartAltIcon />
-							</IconButton>
 							<IconButton
 								color="primary"
 								edge="end"
@@ -38,12 +30,11 @@ const SavedList = () => {
 							>
 								<DeleteIcon />
 							</IconButton>
-						</>
 					}
 				>
 					<ListItemText
-						
-						style={{ color: "#ffa6009e" }}
+						onClick={(e) => handleSavedClick(e)}
+						style={{ color: "#ffa6009e", cursor: 'pointer', zIndex:'1000' }}
 						primary={`${search.rover.toUpperCase()} - ${
 							search.dateType === "earth_date"
 								? `EARTH:  ${search.date.slice(11)}`
