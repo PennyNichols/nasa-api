@@ -39,7 +39,7 @@ const SavedList = () => {
 							search.dateType === "earth_date"
 								? `EARTH:  ${search.date.slice(11)}`
 								: `SOL: ${search.date.slice(4)}`
-						} ${search.camera !== null ? ` - CAMERA: ${search.camera}` : ""} `}
+						} ${search.camera !== null ? ` - CAMERA: ${search.camera === undefined ? 'ALL' : search.camera}` : ""} `}
 					/>
 				</ListItem>
 			))}

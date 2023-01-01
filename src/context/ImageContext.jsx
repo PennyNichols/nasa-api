@@ -19,6 +19,7 @@ const ImageProvider = (props) => {
 	const [sol, setSol] = useState();
 	const [cam, setCam] = useState();
 	const [camSelections, setCamSelections] = useState([]);
+	const [screenSize, setScreenSize] = useState(window.innerWidth);
 	const [page, setPage] = useState("&page=1");
 	const [pageCount, setPageCount] = useState("");
 	const [currentDate, setCurrentDate] = useState();
@@ -222,6 +223,10 @@ const ImageProvider = (props) => {
 		window.scroll(0, 0);
 	};
 
+	const returnToTop = () => {
+		window.scroll(0,0);
+	}
+
 	const saveSearch = () => {
 		let entry = {
 			id: v4(),
@@ -290,6 +295,7 @@ const ImageProvider = (props) => {
 				pageCount,
 				handlePage,
 				allImages,
+				returnToTop,
 				saveSearch,
 				savedSearches,
 				handleDelete,

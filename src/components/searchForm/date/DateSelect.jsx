@@ -17,7 +17,7 @@ const DateSelect = () => {
 	const theme = useTheme();
 	return (
 		<div className="form-select">
-			<FormLabel >
+			<FormLabel className='label'>
 				<Typography color="primary" variant="h6">
 					Select a Date
 				</Typography>

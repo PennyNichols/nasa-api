@@ -3,20 +3,19 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 	Typography,
-	useTheme,
 } from "@mui/material";
 import React, { useContext } from "react";
-import { useEffect } from "react";
+import { useState } from "react";
 import { ImageContext } from "../../../context/ImageContext";
 
 const CamSelect = () => {
 	const { camSelections, cam, handleCam } = useContext(ImageContext);
-	const theme = useTheme();
-	
+	const [all, setAll] = useState(true)
+	const handleAll=(e)=>{e.target.value === 'null' ? setAll(!all) : setAll(false)}
 	// console.log(cam)
 	return (
 		<div className="form-select">
-			<FormLabel>
+			<FormLabel className='label'>
 				<Typography color="primary" variant="h6">
 					Select a Camera
 				</Typography>
@@ -34,7 +33,8 @@ const CamSelect = () => {
 						value='null'
 						aria-label='All cameras'
 						style={{ color: "#ffa6009e" }}
-						
+						selected={all}
+						onClick={(e)=>handleAll(e)}
 					>
 						all
 					</ToggleButton>
@@ -44,6 +44,7 @@ const CamSelect = () => {
 						key={index}
 						aria-label={option}
 						style={{ color: "#ffa6009e" }}
+						onClick={(e)=>handleAll(e)}
 					>
 						{option === "MAST"
 							? "Mast"
