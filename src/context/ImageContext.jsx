@@ -50,7 +50,7 @@ const ImageProvider = (props) => {
 	useEffect(() => {
 		fetchManifest();
 	}, [roverName]);
-	console.log(manifest)
+	// console.log(manifest)
 
 
 	useEffect(()=>{
@@ -63,7 +63,7 @@ const ImageProvider = (props) => {
 
 	const fetchCameras = async () => {
 		const photos = manifest.photos;
-		
+		console.log(photos[0])
 		const setDay = (dateType) => {
 			if (dateType === "sol") {
 				return photos?.find((item) => item.sol === sol);
@@ -75,13 +75,13 @@ const ImageProvider = (props) => {
 
 		// console.log(day)
 		// console.log(cams)
-		console.log(day.cameras)
+		// console.log(day.cameras)
 		setCamSelections(day.cameras);
 	};
 
 	useEffect(()=>{
 		fetchCameras()
-	},[date])
+	},[date,earthDate,sol])
 
 
 	const fetchImages = async () => {
@@ -91,6 +91,7 @@ const ImageProvider = (props) => {
 
 	const fetchAllImages = async () => {
 		const { data } = await axios.get(allImagesUrl);
+		// console.log(data.photos)
 		setAllImages(data?.photos);
 		setPageCount(Math.ceil(data?.photos.length / 25))
 	};
@@ -125,6 +126,8 @@ const ImageProvider = (props) => {
 			setDateType("earth_date");
 			setDate(`date=${earthDate}`);
 		}
+		fetchCameras()
+		setCam(null)
 	};
 	// console.log(dateType)
 
@@ -198,6 +201,8 @@ const ImageProvider = (props) => {
 		setDate(`sol=${formattedDate}`);
 	};
 
+	
+
 	const handleCam = (e) => {
 		setCam(e.target.value);
 		fetchImages();
@@ -241,6 +246,7 @@ const ImageProvider = (props) => {
 	};
 
 	const handleSavedClick = (e) => {
+		console.log(e.target.parentElement)
 		const currentItem = savedSearches.splice(
 			e.target.parentElement.parentElement.id,
 			1
