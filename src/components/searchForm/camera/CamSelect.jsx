@@ -30,6 +30,14 @@ const CamSelect = () => {
 				onChange={(e)=>handleCam(e)}
 				aria-label="Mars Rover Camera Selection"
 			>
+				<ToggleButton
+						value='null'
+						aria-label='All cameras'
+						style={{ color: "#ffa6009e" }}
+						
+					>
+						all
+					</ToggleButton>
 				{camSelections?.map((option, index) => (
 					<ToggleButton
 						value={option}

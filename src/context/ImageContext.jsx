@@ -17,7 +17,7 @@ const ImageProvider = (props) => {
 	const [date, setDate] = useState();
 	const [earthDate, setEarthDate] = useState();
 	const [sol, setSol] = useState();
-	const [cam, setCam] = useState(null);
+	const [cam, setCam] = useState();
 	const [camSelections, setCamSelections] = useState([]);
 	const [page, setPage] = useState("&page=1");
 	const [pageCount, setPageCount] = useState("");
@@ -204,10 +204,15 @@ const ImageProvider = (props) => {
 	
 
 	const handleCam = (e) => {
-		setCam(e.target.value);
+		if (e.target.value === 'null'){
+			setCam()
+			fetchImages()
+			fetchAllImages()
+		}else{
+			setCam(e.target.value);
+		}
 	};
 	useEffect(()=>{
-		console.log(allImages)
 		const filtered = allImages.filter((image)=> image.camera.name === cam)
 		setPageCount(Math.ceil(filtered.length / 25))
 	},[cam])
