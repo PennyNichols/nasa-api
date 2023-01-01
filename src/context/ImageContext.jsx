@@ -99,7 +99,7 @@ const ImageProvider = (props) => {
 	useEffect(()=>{
 		fetchImages();
 		fetchAllImages();
-	},[roverName, date,cam,page])
+	},[roverName, date,page])
 
 	
 
@@ -205,9 +205,12 @@ const ImageProvider = (props) => {
 
 	const handleCam = (e) => {
 		setCam(e.target.value);
-		fetchImages();
-		fetchAllImages();
 	};
+	useEffect(()=>{
+		console.log(allImages)
+		const filtered = allImages.filter((image)=> image.camera.name === cam)
+		setPageCount(Math.ceil(filtered.length / 25))
+	},[cam])
 
 	const handlePage = (e) => {
 		setPage(`&page=${e.target.textContent}`);
