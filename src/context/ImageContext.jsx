@@ -62,7 +62,7 @@ const ImageProvider = (props) => {
 		} else {
 			setDate(`sol=${sol}`)
 		}
-	},[earthDate, sol, date])
+	},[earthDate, sol])
 
 	const fetchCameras = async () => {
 		const photos = manifest.photos;
@@ -265,15 +265,16 @@ const ImageProvider = (props) => {
 	};
 
 	const handleSavedClick = (e) => {
-		console.log(e.target.parentElement)
-		const currentSearches = [...savedSearches]
-		const currentItem = currentSearches.splice(
-			e.target.parentElement.parentElement.id, 1);
+		// const currentSearches = [...savedSearches]
+		// const currentItem = currentSearches.splice(
+		// 	e.target.parentElement.parentElement.id, 1);
+		// 	console.log(currentItem)
+		const currentItem = savedSearches[e.target.parentElement.parentElement.id]
 			console.log(currentItem)
-		setCam(currentItem[0].camera);
+		setRoverName(currentItem[0].rover);
 		setDateType(currentItem[0].dateType);
 		setDate(currentItem[0].date);
-		setRoverName(currentItem[0].rover);
+		setCam(currentItem[0].camera);
 	};
 
 	return (
