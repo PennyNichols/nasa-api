@@ -1,6 +1,7 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { v4 } from "uuid";
 import axios from "axios";
+import debounce from "lodash.debounce";
 
 export const ImageContext = createContext();
 
@@ -68,7 +69,7 @@ const ImageProvider = (props) => {
 		console.log(photos[0])
 		const setDay = (dateType) => {
 			if (dateType === "sol") {
-				return photos?.find((item) => item.sol === sol);
+				return photos?.find((item) => item.sol === +sol);
 			} else {
 				return photos?.find((item) => item.earth_date === earthDate);
 			}
@@ -80,6 +81,8 @@ const ImageProvider = (props) => {
 		// console.log(day.cameras)
 		setCamSelections(day.cameras);
 	};
+
+
 
 	useEffect(()=>{
 		fetchCameras()
@@ -120,6 +123,9 @@ const ImageProvider = (props) => {
 		setDate(maxDate);
 	};
 
+
+
+
 	const handleDate = (event) => {
 		if (event.target.value === "sol") {
 			setDateType("sol");
@@ -128,10 +134,9 @@ const ImageProvider = (props) => {
 			setDateType("earth_date");
 			setDate(`date=${earthDate}`);
 		}
-		fetchCameras()
 		setCam(null)
 	};
-	// console.log(dateType)
+	console.log(dateType)
 
 	function formatEarthDate(value) {
 		if (!value) return value;
@@ -261,10 +266,10 @@ const ImageProvider = (props) => {
 
 	const handleSavedClick = (e) => {
 		console.log(e.target.parentElement)
-		const currentItem = savedSearches.splice(
-			e.target.parentElement.parentElement.id,
-			1
-		);
+		const currentSearches = [...savedSearches]
+		const currentItem = currentSearches.splice(
+			e.target.parentElement.parentElement.id, 1);
+			console.log(currentItem)
 		setCam(currentItem[0].camera);
 		setDateType(currentItem[0].dateType);
 		setDate(currentItem[0].date);
