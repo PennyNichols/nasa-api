@@ -20,6 +20,7 @@ const ImageProvider = (props) => {
 	const [cam, setCam] = useState();
 	const [camSelections, setCamSelections] = useState([]);
 	const [screenSize, setScreenSize] = useState(window.innerWidth);
+
 	const [page, setPage] = useState("&page=1");
 	const [pageCount, setPageCount] = useState("");
 	const [currentDate, setCurrentDate] = useState();
@@ -220,11 +221,11 @@ const ImageProvider = (props) => {
 
 	const handlePage = (e) => {
 		setPage(`&page=${e.target.textContent}`);
-		window.scroll(0, 0);
+		window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 	};
-
+	
 	const returnToTop = () => {
-		window.scroll(0,0);
+		window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 	}
 
 	const saveSearch = () => {
@@ -300,7 +301,8 @@ const ImageProvider = (props) => {
 				savedSearches,
 				handleDelete,
 				handleSavedClick,
-				fetchCameras
+				fetchCameras,
+				screenSize
 			}}
 		>
 			{props.children}

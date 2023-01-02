@@ -3,14 +3,14 @@ import React, { useContext } from "react";
 import { ImageContext } from "../../../context/ImageContext";
 
 const SolInput = () => {
-	const { handleSolDate, sol, manifest } = useContext(ImageContext);
+	const { handleSolDate, date, manifest } = useContext(ImageContext);
 	return (
 		<TextField
 			id="date-input"
-			aria-label="Earth Date"
+			aria-label="Sol"
 			variant="outlined"
       		color='warning'
-			value={sol}
+			value={date?.slice(4)}
 			helperText={`Number between 0 & ${manifest?.max_sol}`}
 			onChange={(e) => handleSolDate(e)}
 		/>

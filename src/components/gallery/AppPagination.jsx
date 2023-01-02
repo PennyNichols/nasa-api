@@ -3,12 +3,12 @@ import React, { useContext } from "react";
 import { ImageContext } from "../../context/ImageContext";
 
 const AppPagination = () => {
-	const { handlePage, pageCount, returnToTop } = useContext(ImageContext);
+	const { handlePage, pageCount, returnToTop, screenSize } = useContext(ImageContext);
 
 	return (
 		<div className="pagination-container">
 			<div className="pagination-wrapper">
-				{window.innerWidth > 550 ? (
+				{screenSize > 550 ? (
 					<Pagination
 						shape="rounded"
 						count={pageCount}
