@@ -35,6 +35,14 @@ const ImageProvider = (props) => {
 
 	const dateTypeOptions = ["earth_date", "sol"];
 
+
+	useEffect(()=>{
+		const handleResize = ()=>{
+			setScreenSize(window.innerWidth);
+		}
+		window.addEventListener('resize', handleResize)
+	}, [])
+
 	const fetchManifest = async () => {
 		const { data } = await axios.get(manifestUrl);
 		const photos = data.photo_manifest.photos;
