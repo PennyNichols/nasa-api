@@ -66,7 +66,6 @@ const ImageProvider = (props) => {
 
 	const fetchCameras = async () => {
 		const photos = manifest.photos;
-		console.log(photos[0])
 		const setDay = (dateType) => {
 			if (dateType === "sol") {
 				return photos?.find((item) => item.sol === +sol);
@@ -79,7 +78,7 @@ const ImageProvider = (props) => {
 		// console.log(day)
 		// console.log(cams)
 		// console.log(day.cameras)
-		setCamSelections(day.cameras);
+		setCamSelections(day?.cameras);
 	};
 
 
@@ -136,7 +135,6 @@ const ImageProvider = (props) => {
 		}
 		setCam(null)
 	};
-	console.log(dateType)
 
 	function formatEarthDate(value) {
 		if (!value) return value;
@@ -271,10 +269,10 @@ const ImageProvider = (props) => {
 		// 	console.log(currentItem)
 		const currentItem = savedSearches[e.target.parentElement.parentElement.id]
 			console.log(currentItem)
-		setRoverName(currentItem[0].rover);
-		setDateType(currentItem[0].dateType);
-		setDate(currentItem[0].date);
-		setCam(currentItem[0].camera);
+		setRoverName(currentItem.rover);
+		setDateType(currentItem.dateType);
+		setDate(currentItem.date);
+		setCam(currentItem.camera);
 	};
 
 	return (
