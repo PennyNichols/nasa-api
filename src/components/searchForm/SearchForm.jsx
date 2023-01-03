@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
-import { Box, Button, Container } from "@mui/material";
-import { ImageContext } from "../../context/ImageContext";
+import React, {  useState } from "react";
+import {  Button, Container } from "@mui/material";
 import RoverSelect from "./RoverSelect";
 import DateSelect from "./date/DateSelect";
 import CamSelect from "./camera/CamSelect";
