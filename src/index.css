@@ -120,3 +120,7 @@
 		padding-top: 0;
 	}
 }
+
+.Toastify__progress-bar {
+	background-color:rgb(195, 128, 3);
+}

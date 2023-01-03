@@ -1,6 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { v4 } from "uuid";
 import axios from "axios";
+import {toast} from 'react-toastify'
+
 
 export const ImageContext = createContext();
 
@@ -22,6 +24,10 @@ const ImageProvider = (props) => {
 
 	const now = `${year}-${month}-${today}`
 	
+	const notify = (message) => toast(message, {
+		theme: 'dark',
+		autoClose: 3000,
+	})
 
 
 	const [manifest, setManifest] = useState('');
@@ -33,6 +39,7 @@ const ImageProvider = (props) => {
 		from: 0,
 		to: pageSize,
 	});
+	const [activePage, setActivePage] = useState(1)
 	const [paginatedImages, setPaginatedImages] = useState([]);
 	const [roverName, setRoverName] = useState("curiosity");
 	const [dateType, setDateType] = useState("earth_date");
@@ -117,17 +124,13 @@ const ImageProvider = (props) => {
 	
 	
 	const fetchAllImages = async () => {
-		const { data } = await axios.get(allImagesUrl);
-		setAllImages(data.photos);
-		setImages(data.photos);
+		if (date !== 'earth_date=') {
+			const { data } = await axios.get(allImagesUrl);
+			setAllImages(data.photos);
+			setImages(data.photos);
+			if (cam) handleCamChange()
+		}
 	};
-
-
-
-
-
-// possible cause of issue with saved search recall
-
 
 	useEffect(() => {
 		fetchAllImages();
@@ -143,7 +146,7 @@ const ImageProvider = (props) => {
 
 
 
-	useEffect(() => {
+	const handleCamChange = () => {
 		const filtered = allImages?.filter((image) => image.camera.name === cam);
 		if (cam) {
 			setImages(filtered);
@@ -152,7 +155,11 @@ const ImageProvider = (props) => {
 			setImages(allImages);
 
 		}
-	}, [cam]);
+	};
+
+	useEffect(()=>{
+		handleCamChange()
+	},[cam])
 
 	const paginateData = () => {
 		setPaginatedImages(images.slice(pagination.from, pagination.to));
@@ -199,7 +206,7 @@ const ImageProvider = (props) => {
 			num.slice(0, 4) < manifest.landing_date.slice(0, 4) ||
 			num.slice(0, 4) > maxDate.slice(0, 4)
 		) {
-			alert(
+			notify(
 				`Please enter a valid year between ${manifest.landing_date.slice(
 					0,
 					4
@@ -210,7 +217,7 @@ const ImageProvider = (props) => {
 			return `${num.slice(0, 4)}-${num.slice(4)}`;
 		}
 		if (num.slice(4, 6) < 1 || num.slice(4, 6) > 12) {
-			alert(`Please enter a valid month between 1 and 12`);
+			notify(`Please enter a valid month between 1 and 12`);
 		}
 		if (
 			num.slice(4, 6) === "01" ||
@@ -222,21 +229,21 @@ const ImageProvider = (props) => {
 			num.slice(4, 6) === "12"
 		) {
 			if (num.slice(6, 8) > 31) {
-				alert(`Please enter a valid date for month ${num.slice(4, 6)} (1-31)`);
+				notify(`Please enter a valid date for month ${num.slice(4, 6)} (1-31)`);
 			}
 		} else if (num.slice(4, 6) == "02") {
 			if (num.slice(0, 4) % 4 != 0) {
 				if (num.slice(6, 8) > 28) {
-					alert(`Please enter a valid date for a non-leap February (1-28)`);
+					notify(`Please enter a valid date for a non-leap February (1-28)`);
 				}
 			} else {
 				if (num.slice(6, 8) > 29) {
-					alert(`Please enter a valid date for a leap February (1-29)`);
+					notify(`Please enter a valid date for a leap February (1-29)`);
 				}
 			}
 		} else {
 			if (num.slice(6, 8) > 30) {
-				alert(`Please enter a valid date for month ${num.slice(4, 6)} (1-30)`);
+				notify(`Please enter a valid date for month ${num.slice(4, 6)} (1-30)`);
 			}
 		}
 		return `${num.slice(0, 4)}-${num.slice(4, 6)}-${num.slice(6, 8)}`;
@@ -253,7 +260,7 @@ const ImageProvider = (props) => {
 		if (!value) return value;
 		const num = value.replace(/[^\d]/g, "");
 		if (num < 0 || num > manifest.max_sol) {
-			alert(`Please enter a valid Sol date between 0 and ${manifest.max_sol}`);
+			notify(`Please enter a valid Sol date between 0 and ${manifest.max_sol}`);
 		}
 		return num;
 	}
@@ -271,6 +278,7 @@ const ImageProvider = (props) => {
 			fetchAllImages();
 		} else {
 			setCam(event.target.value);
+			handlePage(null,1)
 		}
 	};
 
@@ -278,6 +286,7 @@ const ImageProvider = (props) => {
 		const from = (page - 1) * pageSize;
 		const to = (page - 1) * pageSize + pageSize;
 		setPagination({ ...pagination, from: from, to: to });
+		setActivePage(page)
 		window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 	};
 
@@ -327,6 +336,7 @@ const ImageProvider = (props) => {
 		setDate(currentItem.date);
 		setCam(currentItem.camera);
 	};
+	
 
 	return (
 		<ImageContext.Provider
@@ -352,6 +362,7 @@ const ImageProvider = (props) => {
 				allImages,
 				paginatedImages,
 				pagination,
+				activePage,
 				returnToTop,
 				saveSearch,
 				savedSearches,
