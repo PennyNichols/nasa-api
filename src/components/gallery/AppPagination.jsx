@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { ImageContext } from "../../context/ImageContext";
 
 const AppPagination = () => {
-	const { handlePage, pageCount, returnToTop, screenSize } = useContext(ImageContext);
+	const { handlePage, pagination, returnToTop, screenSize } = useContext(ImageContext);
 
 	return (
 		<div className="pagination-container">
@@ -11,9 +11,9 @@ const AppPagination = () => {
 				{screenSize > 550 ? (
 					<Pagination
 						shape="rounded"
-						count={pageCount}
+						count={pagination.count}
 						color="primary"
-						onChange={(e) => handlePage(e)}
+						onChange={(event,page) => handlePage(event,page)}
 					/>
 				) : (
 					<Button style={{ color: "black", width: '100%' }} onClick={returnToTop}>

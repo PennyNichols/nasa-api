@@ -4,22 +4,15 @@ import AppPagination from "./AppPagination";
 import ImageCard from "./ImageCard";
 
 const Gallery = () => {
-	const { allImages, cam, images } = useContext(ImageContext);
+	const { images, paginatedImages, screenSize } = useContext(ImageContext);
 	// const filter = () => {}
-	const filteredImages = allImages?.filter(
-		(image) => image.camera.name === cam
-	);
 	// console.log(filteredImages.length);
 	return (
 		<>
 			<div className="gallery">
-				{filteredImages.length > 0
-					? filteredImages?.map((image) => (
-							<ImageCard image={image} key={image.id} />
-					  ))
-					: window.innerWidth > 550
+				{screenSize < 550
 					? images?.map((image) => <ImageCard image={image} key={image.id} />)
-					: allImages?.map((image) => (
+					: paginatedImages?.map((image) => (
 							<ImageCard image={image} key={image.id} />
 					  ))}
 			</div>
