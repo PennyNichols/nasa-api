@@ -1,9 +1,10 @@
-import { TextField } from "@mui/material";
+import { inputAdornmentClasses, TextField } from "@mui/material";
 import React, { useContext } from "react";
 import { ImageContext } from "../../../context/ImageContext";
 
 const EarthInput = () => {
 	const { handleEarthDate, date, manifest } = useContext(ImageContext);
+
 	return (
 		<TextField
 			id="date-input"

@@ -11,15 +11,23 @@ function App() {
 	return (
 		<>
 			<ToastContainer />
-			<Box
-        sx={{padding:'0'}}
-      className="page">
-
-        <Title/>
+			<Box sx={{ padding: "0" }} className="page">
+				<Title />
 				<SearchForm />
 				{date && <Gallery />}
 			</Box>
-      <Typography  style={{position:'fixed', bottom:'0', left:'0', zIndex:'10000', fontSize:'10px', padding:'3px'}} >Penny Nichols</Typography>
+			<Typography
+				style={{
+					position: "fixed",
+					bottom: "0",
+					left: "0",
+					zIndex: "10000",
+					fontSize: "10px",
+					padding: "3px",
+				}}
+			>
+				Penny Nichols
+			</Typography>
 		</>
 	);
 }

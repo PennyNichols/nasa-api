@@ -7,21 +7,30 @@ import CamSelect from "./camera/CamSelect";
 import SavedSearches from "../savedSearches/SavedSearches";
 
 const SearchForm = () => {
-	const [hide, setHide] = useState(false);
-	const handleHide = () => {
-		setHide(!hide);
+	const [isOpen, setIsOpen] = useState(false);
+	const handleIsOpen = () => {
+		setIsOpen(!isOpen);
 	};
 	return (
-		<Container sx={{bgcolor:'#00000075'}} className="form-container" maxWidth="sm">
+		<Container
+			sx={{ bgcolor: "#00000075" }}
+			className="form-container"
+			maxWidth="sm"
+		>
 			<Container
-        
-				style={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', marginBottom:'20px'}}
+				sx={{
+					width: "100%",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					marginBottom: "20px",
+				}}
 			>
-				<Button variant="outlined" onClick={handleHide}>
-					{!hide ? "Hide Options" : "Show Options"}
+				<Button variant="outlined" onClick={handleIsOpen}>
+					{!isOpen ? "Hide Options" : "Show Options"}
 				</Button>
 			</Container>
-			{!hide && (
+			{!isOpen && (
 				<>
 					<RoverSelect />
 					<DateSelect />

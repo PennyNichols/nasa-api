@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik+Dirt&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik+Dirt&display=swap");
 
 * {
 	margin: 0;
@@ -17,15 +17,14 @@
 	padding: 40px 0;
 }
 
-.title{
-	font-family: 'Rubik Dirt', 'Poppins', Arial, sans-serif;
-	background-color:rgba(0, 0, 0, 0.5);
+.title {
+	font-family: "Rubik Dirt", "Poppins", Arial, sans-serif;
+	background-color: rgba(0, 0, 0, 0.5);
 	margin-bottom: 10px;
 	padding: 10px 0;
 }
 
 .form-container {
-	
 	padding: 20px;
 }
 
@@ -64,13 +63,12 @@
 	gap: 10px;
 }
 
-
 .gallery {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 20px;
 	justify-content: center;
-	padding: 20px 0px;
+	padding: 20px 20px;
 }
 
 .card {
@@ -102,7 +100,7 @@
 	position: fixed;
 	bottom: 0;
 	z-index: 200;
-	padding: 5px 10px;
+	padding: 0px 10px;
 	background-color: #efb22d;
 	width: 100vw;
 }
@@ -113,7 +111,7 @@
 	align-items: center;
 }
 
-@media (max-width: 550px){
+@media (max-width: 550px) {
 	.form-select {
 		flex-direction: column;
 	}
@@ -121,13 +119,13 @@
 		flex-direction: column;
 	}
 	.label {
-		margin-bottom: 10px
+		margin-bottom: 10px;
 	}
-	.page{
+	.page {
 		padding-top: 0;
 	}
 }
 
 .Toastify__progress-bar {
-	background-color:rgb(195, 128, 3);
+	background-color: rgb(195, 128, 3);
 }

@@ -4,11 +4,7 @@ import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturi
 const Title = () => {
 	return (
 		<Box sx={{ bgColor: "#00000075" }}>
-			<Typography
-				variant="h4"
-				color="primary"
-				textAlign={"center"}
-			>
+			<Typography variant="h4" color="primary" textAlign={"center"}>
 				<p className="title">
 					DISCOVER{" "}
 					<span style={{ fontFamily: "inherit", color: "#f8c0579e" }}>

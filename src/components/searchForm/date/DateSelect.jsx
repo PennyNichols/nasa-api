@@ -10,12 +10,11 @@ import EarthInput from "./EarthInput";
 import SolInput from "./SolInput";
 
 const DateSelect = () => {
-	const { handleDate, dateType, dateTypeOptions } =
-		useContext(ImageContext);
+	const { handleDate, dateType, dateTypeOptions } = useContext(ImageContext);
 
 	return (
 		<div className="form-select">
-			<FormLabel className='label'>
+			<FormLabel className="label">
 				<Typography color="primary" variant="h6">
 					Select a Date
 				</Typography>

@@ -11,7 +11,6 @@ const RoverSelect = () => {
 	const { handleRover, roverName, roverOptions, screenSize } =
 		useContext(ImageContext);
 
-
 	return (
 		<div className="form-select">
 			<FormLabel className="label">

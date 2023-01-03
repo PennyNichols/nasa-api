@@ -1,36 +1,35 @@
 import { createContext, useEffect, useState } from "react";
 import { v4 } from "uuid";
 import axios from "axios";
-import {toast} from 'react-toastify'
-
+import { toast } from "react-toastify";
 
 export const ImageContext = createContext();
 
 const key = process.env.REACT_APP_NASA_API_KEY;
 
 const ImageProvider = (props) => {
-	let todaysDate = new Date()
-	const year = todaysDate.getFullYear()
-	let month = todaysDate.getMonth()
+	let todaysDate = new Date();
+	const year = todaysDate.getFullYear();
+	let month = todaysDate.getMonth();
 	if (month < 9) {
-		month = `0${month+1}`
-	}else{
+		month = `0${month + 1}`;
+	} else {
 		month = month + 1;
-	} 
-	let today = todaysDate.getDate()
+	}
+	let today = todaysDate.getDate();
 	if (today < 9) {
-		today = `0${today}`
-	} 
+		today = `0${today}`;
+	}
 
-	const now = `${year}-${month}-${today}`
-	
-	const notify = (message) => toast(message, {
-		theme: 'dark',
-		autoClose: 3000,
-	})
+	const now = `${year}-${month}-${today}`;
 
+	const notify = (message) =>
+		toast(message, {
+			theme: "dark",
+			autoClose: 3000,
+		});
 
-	const [manifest, setManifest] = useState('');
+	const [manifest, setManifest] = useState("");
 	const [images, setImages] = useState([]);
 	const [allImages, setAllImages] = useState([]);
 	const [pageSize, setPageSize] = useState(25);
@@ -39,16 +38,16 @@ const ImageProvider = (props) => {
 		from: 0,
 		to: pageSize,
 	});
-	const [activePage, setActivePage] = useState(1)
+	const [activePage, setActivePage] = useState(1);
 	const [paginatedImages, setPaginatedImages] = useState([]);
 	const [roverName, setRoverName] = useState("curiosity");
 	const [dateType, setDateType] = useState("earth_date");
-	const [maxDate, setMaxDate] = useState('');
-	const [maxSol, setMaxSol] = useState('');
+	const [maxDate, setMaxDate] = useState("");
+	const [maxSol, setMaxSol] = useState("");
 	const [date, setDate] = useState(`earth_date=${now}`);
-	const [earthDate, setEarthDate] = useState('');
-	const [sol, setSol] = useState('');
-	const [cam, setCam] = useState('');
+	const [earthDate, setEarthDate] = useState("");
+	const [sol, setSol] = useState("");
+	const [cam, setCam] = useState("");
 	const [camSelections, setCamSelections] = useState([]);
 	const [screenSize, setScreenSize] = useState(window.innerWidth);
 	const [savedSearches, setSavedSearches] = useState([]);
@@ -85,7 +84,6 @@ const ImageProvider = (props) => {
 		fetchManifest();
 	}, [roverName]);
 
-	
 	useEffect(() => {
 		if (dateType === "earth_date") {
 			setDate(`earth_date=${earthDate}`);
@@ -107,28 +105,16 @@ const ImageProvider = (props) => {
 		setCamSelections(day?.cameras);
 	};
 
-
-
-
-// possible cause of saved search recall issue
-
-
 	useEffect(() => {
 		fetchCameras();
 	}, [date, earthDate, sol]);
 
-	
-	
-	
-	
-	
-	
 	const fetchAllImages = async () => {
-		if (date !== 'earth_date=') {
+		if (date !== "earth_date=") {
 			const { data } = await axios.get(allImagesUrl);
 			setAllImages(data.photos);
 			setImages(data.photos);
-			if (cam) handleCamChange()
+			if (cam) handleCamChange();
 		}
 	};
 
@@ -136,30 +122,18 @@ const ImageProvider = (props) => {
 		fetchAllImages();
 	}, [roverName, date]);
 
-
-
-
-
-
-
-
-
-
-
 	const handleCamChange = () => {
 		const filtered = allImages?.filter((image) => image.camera.name === cam);
 		if (cam) {
 			setImages(filtered);
-
 		} else {
 			setImages(allImages);
-
 		}
 	};
 
-	useEffect(()=>{
-		handleCamChange()
-	},[cam])
+	useEffect(() => {
+		handleCamChange();
+	}, [cam]);
 
 	const paginateData = () => {
 		setPaginatedImages(images.slice(pagination.from, pagination.to));
@@ -186,14 +160,16 @@ const ImageProvider = (props) => {
 	};
 
 	const handleDate = (event) => {
-		if (event.target.value === "sol") {
-			setDateType("sol");
-			setDate(`sol=${maxSol}`);
-			setCam();
-		} else if (event.target.value === "earth_date") {
-			setDateType("earth_date");
-			setDate(`date=${maxDate}`);
-			setCam();
+		if (event.target.value !== dateType) {
+			if (event.target.value === "sol") {
+				setDateType("sol");
+				setDate(`sol=${maxSol}`);
+				setCam();
+			} else if (event.target.value === "earth_date") {
+				setDateType("earth_date");
+				setDate(`date=${maxDate}`);
+				setCam();
+			}
 		}
 	};
 
@@ -278,7 +254,7 @@ const ImageProvider = (props) => {
 			fetchAllImages();
 		} else {
 			setCam(event.target.value);
-			handlePage(null,1)
+			handlePage(null, 1);
 		}
 	};
 
@@ -286,7 +262,7 @@ const ImageProvider = (props) => {
 		const from = (page - 1) * pageSize;
 		const to = (page - 1) * pageSize + pageSize;
 		setPagination({ ...pagination, from: from, to: to });
-		setActivePage(page)
+		setActivePage(page);
 		window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 	};
 
@@ -307,36 +283,29 @@ const ImageProvider = (props) => {
 		setSavedSearches(updatedSaves);
 		localStorage.setItem("allSaves", JSON.stringify(updatedSaves));
 	};
+
 	const handleDelete = (event, id) => {
-		
 		const itemToRemove =
 			savedSearches[
 				event.target.parentElement.parentElement.parentElement.parentElement.id
 			];
 		const currentId = itemToRemove.id;
-		// console.log(currentId);
 		const newSavedSearches = savedSearches.filter(
 			(savedSearch) => savedSearch.id !== currentId
 		);
-		// console.log(newSavedSearches);
 		localStorage.setItem("allSaves", JSON.stringify(newSavedSearches));
-		// localStorage.allSaves.removeItem(itemToRemove)
 		fetchSearches();
 	};
 
 	const handleSavedClick = (event) => {
-		// const currentSearches = [...savedSearches]
-		// const currentItem = currentSearches.splice(
-		// 	e.target.parentElement.parentElement.id, 1);
-		// 	console.log(currentItem)
-		const currentItem = savedSearches[event.target.parentElement.parentElement.id];
+		const currentItem =
+			savedSearches[event.target.parentElement.parentElement.id];
 		console.log(currentItem);
 		setDateType(currentItem.dateType);
 		setRoverName(currentItem.rover);
 		setDate(currentItem.date);
 		setCam(currentItem.camera);
 	};
-	
 
 	return (
 		<ImageContext.Provider
@@ -346,20 +315,16 @@ const ImageProvider = (props) => {
 				roverOptions,
 				dateTypeOptions,
 				roverName,
-				setRoverName,
 				dateType,
 				handleDate,
 				date,
-				setDate,
 				camSelections,
 				cam,
-				setCam,
 				handleRover,
 				handleEarthDate,
 				handleSolDate,
 				handleCam,
 				handlePage,
-				allImages,
 				paginatedImages,
 				pagination,
 				activePage,

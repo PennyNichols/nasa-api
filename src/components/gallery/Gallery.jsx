@@ -1,3 +1,4 @@
+import { Box } from "@mui/material";
 import React, { useContext } from "react";
 import { ImageContext } from "../../context/ImageContext";
 import AppPagination from "./AppPagination";
@@ -7,13 +8,13 @@ const Gallery = () => {
 	const { images, paginatedImages, screenSize } = useContext(ImageContext);
 	return (
 		<>
-			<div className="gallery">
+			<Box className="gallery">
 				{screenSize < 550
 					? images?.map((image) => <ImageCard image={image} key={image.id} />)
 					: paginatedImages?.map((image) => (
 							<ImageCard image={image} key={image.id} />
 					  ))}
-			</div>
+			</Box>
 			<AppPagination />
 		</>
 	);

@@ -10,12 +10,14 @@ import { ImageContext } from "../../../context/ImageContext";
 
 const CamSelect = () => {
 	const { camSelections, cam, handleCam } = useContext(ImageContext);
-	const [all, setAll] = useState(true)
-	const handleAll=(event)=>{event.target.value === 'null' ? setAll(!all) : setAll(false)}
-	// console.log(cam)
+	const [all, setAll] = useState(true);
+	const handleAll = (event) => {
+		event.target.value === "null" ? setAll(!all) : setAll(false);
+	};
+
 	return (
 		<div className="form-select">
-			<FormLabel className='label'>
+			<FormLabel className="label">
 				<Typography color="primary" variant="h6">
 					Select a Camera
 				</Typography>
@@ -24,27 +26,27 @@ const CamSelect = () => {
 				className="toggle-group"
 				value={cam}
 				color="primary"
-                orientation='vertical'
+				orientation="vertical"
 				exclusive
-				onChange={(event)=>handleCam(event)}
+				onChange={(event) => handleCam(event)}
 				aria-label="Mars Rover Camera Selection"
 			>
 				<ToggleButton
-						value='null'
-						aria-label='All cameras'
-						style={{ color: "#ffa6009e" }}
-						selected={all}
-						onClick={(event)=>handleAll(event)}
-					>
-						all
-					</ToggleButton>
+					value="null"
+					aria-label="All cameras"
+					style={{ color: "#ffa6009e" }}
+					selected={all}
+					onClick={(event) => handleAll(event)}
+				>
+					all
+				</ToggleButton>
 				{camSelections?.map((option, index) => (
 					<ToggleButton
 						value={option}
 						key={index}
 						aria-label={option}
 						style={{ color: "#ffa6009e" }}
-						onClick={(event)=>handleAll(event)}
+						onClick={(event) => handleAll(event)}
 					>
 						{option === "MAST"
 							? "Mast"
@@ -58,14 +60,14 @@ const CamSelect = () => {
 							? "mars hand lens"
 							: option === "RHAZ"
 							? "rear hazard"
-                            : option === 'PANCAM'
-                            ? 'panoramic'
-                            : option === 'ENTRY'
-                            ? 'entry, descent, and landing'
-                            : option === 'MINITES'
-                            ? 'thermal emission spectrometer'
-                            : option === 'MARDI'
-                            ? 'mars descent'
+							: option === "PANCAM"
+							? "panoramic"
+							: option === "ENTRY"
+							? "entry, descent, and landing"
+							: option === "MINITES"
+							? "thermal emission spectrometer"
+							: option === "MARDI"
+							? "mars descent"
 							: ""}
 					</ToggleButton>
 				))}
