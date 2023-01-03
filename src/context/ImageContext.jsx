@@ -262,8 +262,10 @@ const ImageProvider = (props) => {
 		const from = (page - 1) * pageSize;
 		const to = (page - 1) * pageSize + pageSize;
 		setPagination({ ...pagination, from: from, to: to });
-		setActivePage(page);
-		window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+		if (page !== activePage){
+			setActivePage(page);
+			window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+		}
 	};
 
 	const returnToTop = () => {
