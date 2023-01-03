@@ -7,37 +7,34 @@ export const ImageContext = createContext();
 const key = process.env.REACT_APP_NASA_API_KEY;
 
 const ImageProvider = (props) => {
+
 	const [manifest, setManifest] = useState({});
 	const [images, setImages] = useState([]);
 	const [allImages, setAllImages] = useState([]);
-	const [pageSize, setPageSize] = useState(25)
-
+	const [pageSize, setPageSize] = useState(25);
 	const [pagination, setPagination] = useState({
 		count: 0,
 		from: 0,
-		to: pageSize
-	})
-	const [paginatedImages, setPaginatedImages] = useState([])
-	const [pageCount, setPageCount] = useState(pagination.count);	
+		to: pageSize,
+	});
+	const [paginatedImages, setPaginatedImages] = useState([]);
 	const [roverName, setRoverName] = useState("curiosity");
 	const [dateType, setDateType] = useState("earth_date");
-	const [maxDate, setMaxDate] = useState();
-	const [maxSol, setMaxSol] = useState();
-	const [date, setDate] = useState();
-	const [earthDate, setEarthDate] = useState();
-	const [sol, setSol] = useState();
-	const [cam, setCam] = useState();
+	const [maxDate, setMaxDate] = useState('');
+	const [maxSol, setMaxSol] = useState('');
+	const [date, setDate] = useState('');
+	const [earthDate, setEarthDate] = useState('');
+	const [sol, setSol] = useState('');
+	const [cam, setCam] = useState('');
 	const [camSelections, setCamSelections] = useState([]);
 	const [screenSize, setScreenSize] = useState(window.innerWidth);
-
-
 	const [savedSearches, setSavedSearches] = useState([]);
-	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1/rovers";
-	
-	const allImagesUrl = `${baseUrl}/${roverName}/photos?${date}${cam}&api_key=${key}`;
-	const manifestUrl = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverName}/?api_key=${key}`;
-	const roverOptions = ["curiosity", "opportunity", "spirit"];
 
+
+	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1";
+	const allImagesUrl = `${baseUrl}/rovers/${roverName}/photos?${date}${cam}&api_key=${key}`;
+	const manifestUrl = `${baseUrl}/manifests/${roverName}/?api_key=${key}`;
+	const roverOptions = ["curiosity", "opportunity", "spirit"];
 	const dateTypeOptions = ["earth_date", "sol"];
 
 	useEffect(() => {
@@ -65,7 +62,6 @@ const ImageProvider = (props) => {
 	useEffect(() => {
 		fetchManifest();
 	}, [roverName]);
-	// console.log(manifest)
 
 	useEffect(() => {
 		if (dateType === "earth_date") {
@@ -85,10 +81,6 @@ const ImageProvider = (props) => {
 			}
 		};
 		const day = setDay(dateType);
-
-		// console.log(day)
-		// console.log(cams)
-		// console.log(day.cameras)
 		setCamSelections(day?.cameras);
 	};
 
@@ -96,24 +88,21 @@ const ImageProvider = (props) => {
 		fetchCameras();
 	}, [date, earthDate, sol]);
 
-
-
 	const fetchAllImages = async () => {
 		const { data } = await axios.get(allImagesUrl);
-		// console.log(data.photos)
-		setAllImages(data?.photos);
-		setImages(data?.photos);
-		
-		// setPageCount(Math.ceil(data?.photos.length / pageSize));
+		setAllImages(data.photos);
+		setImages(data.photos);
 	};
+
+
+
+
+
+// possible cause of issue with saved search recall
+
 
 	useEffect(() => {
 		fetchAllImages();
-
-
-
-
-
 	}, [roverName, date]);
 
 
@@ -121,37 +110,35 @@ const ImageProvider = (props) => {
 
 
 
-	
+
+
+
+
 
 	useEffect(() => {
 		const filtered = allImages?.filter((image) => image.camera.name === cam);
 		if (cam) {
-			setImages(filtered)
+			setImages(filtered);
 
-			// setPageCount(Math.ceil(filtered.length / pageSize))
 		} else {
-			setImages(allImages)
+			setImages(allImages);
 
-			// setPageCount(Math.ceil(allImages.length / pageSize))
 		}
-		
 	}, [cam]);
 
-	const paginateData = () =>{
-		setPaginatedImages(images.slice(pagination.from, pagination.to))
-		setPagination({...pagination, count: Math.ceil(images.length / 25)})
+	const paginateData = () => {
+		setPaginatedImages(images.slice(pagination.from, pagination.to));
+		setPagination({ ...pagination, count: Math.ceil(images.length / 25) });
+	};
 
-	}
-
-	useEffect(()=>{
-		paginateData()
-	},[images, pagination.to, pagination.from])
+	useEffect(() => {
+		paginateData();
+	}, [images, pagination.to, pagination.from]);
 
 	const fetchSearches = () => {
 		const searchData = JSON.parse(localStorage.getItem("allSaves")) || [];
 		setSavedSearches(searchData);
 	};
-	// console.log(savedSearches)
 
 	useEffect(() => {
 		fetchSearches();
@@ -160,20 +147,19 @@ const ImageProvider = (props) => {
 	const handleRover = (event, newRoverName) => {
 		setRoverName(newRoverName);
 		setDate(maxDate);
-		setCam()
+		setCam();
 	};
 
 	const handleDate = (event) => {
 		if (event.target.value === "sol") {
 			setDateType("sol");
 			setDate(`sol=${maxSol}`);
-			setCam()
+			setCam();
 		} else if (event.target.value === "earth_date") {
 			setDateType("earth_date");
 			setDate(`date=${maxDate}`);
-			setCam()
+			setCam();
 		}
-		
 	};
 
 	function formatEarthDate(value) {
@@ -212,27 +198,27 @@ const ImageProvider = (props) => {
 			}
 		} else if (num.slice(4, 6) == "02") {
 			if (num.slice(0, 4) % 4 != 0) {
-				if (num.slice(6, 8) < 1 || num.slice(6, 8) > 28) {
+				if (num.slice(6, 8) > 28) {
 					alert(`Please enter a valid date for a non-leap February (1-28)`);
 				}
 			} else {
-				if (num.slice(6, 8) < 1 || num.slice(6, 8) > 29) {
+				if (num.slice(6, 8) > 29) {
 					alert(`Please enter a valid date for a leap February (1-29)`);
 				}
 			}
 		} else {
-			if (num.slice(6, 8) < 1 || num.slice(6, 8) > 30) {
+			if (num.slice(6, 8) > 30) {
 				alert(`Please enter a valid date for month ${num.slice(4, 6)} (1-30)`);
 			}
 		}
 		return `${num.slice(0, 4)}-${num.slice(4, 6)}-${num.slice(6, 8)}`;
 	}
 
-	const handleEarthDate = (e) => {
-		const formattedDate = formatEarthDate(e.target.value);
+	const handleEarthDate = (event) => {
+		const formattedDate = formatEarthDate(event.target.value);
 		setEarthDate(formattedDate);
 		setDate(`earth_date=${formattedDate}`);
-		setCam()
+		setCam();
 	};
 
 	function formatSolDate(value) {
@@ -244,27 +230,26 @@ const ImageProvider = (props) => {
 		return num;
 	}
 
-	const handleSolDate = (e) => {
-		const formattedDate = formatSolDate(e.target.value);
+	const handleSolDate = (event) => {
+		const formattedDate = formatSolDate(event.target.value);
 		setSol(formattedDate);
 		setDate(`sol=${formattedDate}`);
-		setCam()
+		setCam();
 	};
 
-	const handleCam = (e) => {
-		if (e.target.value === "null") {
+	const handleCam = (event) => {
+		if (event.target.value === "null") {
 			setCam();
 			fetchAllImages();
 		} else {
-			setCam(e.target.value);
+			setCam(event.target.value);
 		}
-		
 	};
 
 	const handlePage = (event, page) => {
-		const from = (page - 1) * pageSize
-		const to = (page-1) * pageSize + pageSize
-		setPagination({...pagination, from: from, to: to});
+		const from = (page - 1) * pageSize;
+		const to = (page - 1) * pageSize + pageSize;
+		setPagination({ ...pagination, from: from, to: to });
 		window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 	};
 
@@ -285,14 +270,11 @@ const ImageProvider = (props) => {
 		setSavedSearches(updatedSaves);
 		localStorage.setItem("allSaves", JSON.stringify(updatedSaves));
 	};
-	const handleDelete = (e, id) => {
-		console.log(
-			e.target.parentElement.parentElement.parentElement.parentElement.id
-		);
-		console.log(savedSearches);
+	const handleDelete = (event, id) => {
+		
 		const itemToRemove =
 			savedSearches[
-				e.target.parentElement.parentElement.parentElement.parentElement.id
+				event.target.parentElement.parentElement.parentElement.parentElement.id
 			];
 		const currentId = itemToRemove.id;
 		// console.log(currentId);
@@ -305,12 +287,12 @@ const ImageProvider = (props) => {
 		fetchSearches();
 	};
 
-	const handleSavedClick = (e) => {
+	const handleSavedClick = (event) => {
 		// const currentSearches = [...savedSearches]
 		// const currentItem = currentSearches.splice(
 		// 	e.target.parentElement.parentElement.id, 1);
 		// 	console.log(currentItem)
-		const currentItem = savedSearches[e.target.parentElement.parentElement.id];
+		const currentItem = savedSearches[event.target.parentElement.parentElement.id];
 		console.log(currentItem);
 		setDateType(currentItem.dateType);
 		setRoverName(currentItem.rover);
@@ -338,7 +320,6 @@ const ImageProvider = (props) => {
 				handleEarthDate,
 				handleSolDate,
 				handleCam,
-				pageCount,
 				handlePage,
 				allImages,
 				paginatedImages,
