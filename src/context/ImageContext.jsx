@@ -7,8 +7,24 @@ export const ImageContext = createContext();
 const key = process.env.REACT_APP_NASA_API_KEY;
 
 const ImageProvider = (props) => {
+	let todaysDate = new Date()
+	const year = todaysDate.getFullYear()
+	let month = todaysDate.getMonth()
+	if (month < 9) {
+		month = `0${month+1}`
+	}else{
+		month = month + 1;
+	} 
+	let today = todaysDate.getDate()
+	if (today < 9) {
+		today = `0${today}`
+	} 
 
-	const [manifest, setManifest] = useState({});
+	const now = `${year}-${month}-${today}`
+	
+
+
+	const [manifest, setManifest] = useState('');
 	const [images, setImages] = useState([]);
 	const [allImages, setAllImages] = useState([]);
 	const [pageSize, setPageSize] = useState(25);
@@ -22,14 +38,13 @@ const ImageProvider = (props) => {
 	const [dateType, setDateType] = useState("earth_date");
 	const [maxDate, setMaxDate] = useState('');
 	const [maxSol, setMaxSol] = useState('');
-	const [date, setDate] = useState('');
+	const [date, setDate] = useState(`earth_date=${now}`);
 	const [earthDate, setEarthDate] = useState('');
 	const [sol, setSol] = useState('');
 	const [cam, setCam] = useState('');
 	const [camSelections, setCamSelections] = useState([]);
 	const [screenSize, setScreenSize] = useState(window.innerWidth);
 	const [savedSearches, setSavedSearches] = useState([]);
-
 
 	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1";
 	const allImagesUrl = `${baseUrl}/rovers/${roverName}/photos?${date}${cam}&api_key=${key}`;
@@ -63,6 +78,7 @@ const ImageProvider = (props) => {
 		fetchManifest();
 	}, [roverName]);
 
+	
 	useEffect(() => {
 		if (dateType === "earth_date") {
 			setDate(`earth_date=${earthDate}`);
