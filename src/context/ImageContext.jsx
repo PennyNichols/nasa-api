@@ -100,10 +100,22 @@ const ImageProvider = (props) => {
 		setCamSelections(day?.cameras);
 	};
 
+
+
+
+// possible cause of saved search recall issue
+
+
 	useEffect(() => {
 		fetchCameras();
 	}, [date, earthDate, sol]);
 
+	
+	
+	
+	
+	
+	
 	const fetchAllImages = async () => {
 		const { data } = await axios.get(allImagesUrl);
 		setAllImages(data.photos);
