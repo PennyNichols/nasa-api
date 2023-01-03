@@ -3,7 +3,6 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 	Typography,
-	useTheme,
 } from "@mui/material";
 import React, { useContext } from "react";
 import { ImageContext } from "../../../context/ImageContext";
@@ -11,10 +10,9 @@ import EarthInput from "./EarthInput";
 import SolInput from "./SolInput";
 
 const DateSelect = () => {
-	const { handleDate, dateType, dateTypeOptions, date, sol } =
+	const { handleDate, dateType, dateTypeOptions } =
 		useContext(ImageContext);
 
-	const theme = useTheme();
 	return (
 		<div className="form-select">
 			<FormLabel className='label'>
@@ -38,7 +36,7 @@ const DateSelect = () => {
 							aria-label={option}
 							style={{ color: "#ffa6009e" }}
 						>
-							{option == "earth_date" ? "earth date" : "sol"}
+							{option === "earth_date" ? "earth date" : "sol"}
 						</ToggleButton>
 					))}
 				</ToggleButtonGroup>

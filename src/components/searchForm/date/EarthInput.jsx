@@ -13,7 +13,7 @@ const EarthInput = () => {
 			value={date?.slice(11)}
 			placeholder="YYYY-MM-DD"
 			helperText={`Date between ${manifest?.landing_date} & ${manifest?.max_date}`}
-			onChange={(e) => handleEarthDate(e)}
+			onChange={(event) => handleEarthDate(event)}
 		/>
 	);
 };

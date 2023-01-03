@@ -12,7 +12,7 @@ const SolInput = () => {
       		color='warning'
 			value={date?.slice(4)}
 			helperText={`Number between 0 & ${manifest?.max_sol}`}
-			onChange={(e) => handleSolDate(e)}
+			onChange={(event) => handleSolDate(event)}
 		/>
 	);
 };

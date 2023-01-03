@@ -3,18 +3,14 @@ import {
 	ToggleButton,
 	ToggleButtonGroup,
 	Typography,
-	useTheme,
 } from "@mui/material";
 import React, { useContext } from "react";
-import { useState } from "react";
 import { ImageContext } from "../../context/ImageContext";
 
 const RoverSelect = () => {
 	const { handleRover, roverName, roverOptions, screenSize } =
 		useContext(ImageContext);
 
-	const theme = useTheme();
-	// console.log(theme)
 
 	return (
 		<div className="form-select">

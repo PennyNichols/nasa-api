@@ -5,8 +5,6 @@ import ImageCard from "./ImageCard";
 
 const Gallery = () => {
 	const { images, paginatedImages, screenSize } = useContext(ImageContext);
-	// const filter = () => {}
-	// console.log(filteredImages.length);
 	return (
 		<>
 			<div className="gallery">

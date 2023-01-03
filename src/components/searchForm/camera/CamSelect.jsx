@@ -11,7 +11,7 @@ import { ImageContext } from "../../../context/ImageContext";
 const CamSelect = () => {
 	const { camSelections, cam, handleCam } = useContext(ImageContext);
 	const [all, setAll] = useState(true)
-	const handleAll=(e)=>{e.target.value === 'null' ? setAll(!all) : setAll(false)}
+	const handleAll=(event)=>{event.target.value === 'null' ? setAll(!all) : setAll(false)}
 	// console.log(cam)
 	return (
 		<div className="form-select">
@@ -26,7 +26,7 @@ const CamSelect = () => {
 				color="primary"
                 orientation='vertical'
 				exclusive
-				onChange={(e)=>handleCam(e)}
+				onChange={(event)=>handleCam(event)}
 				aria-label="Mars Rover Camera Selection"
 			>
 				<ToggleButton
@@ -34,7 +34,7 @@ const CamSelect = () => {
 						aria-label='All cameras'
 						style={{ color: "#ffa6009e" }}
 						selected={all}
-						onClick={(e)=>handleAll(e)}
+						onClick={(event)=>handleAll(event)}
 					>
 						all
 					</ToggleButton>
@@ -44,7 +44,7 @@ const CamSelect = () => {
 						key={index}
 						aria-label={option}
 						style={{ color: "#ffa6009e" }}
-						onClick={(e)=>handleAll(e)}
+						onClick={(event)=>handleAll(event)}
 					>
 						{option === "MAST"
 							? "Mast"
