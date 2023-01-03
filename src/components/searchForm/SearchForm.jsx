@@ -12,8 +12,9 @@ const SearchForm = () => {
 		setHide(!hide);
 	};
 	return (
-		<Container className="form-container" maxWidth="sm">
+		<Container sx={{bgcolor:'#00000075'}} className="form-container" maxWidth="sm">
 			<Container
+        
 				style={{width:'100%', display:'flex', justifyContent:'center',alignItems:'center', marginBottom:'20px'}}
 			>
 				<Button variant="outlined" onClick={handleHide}>
