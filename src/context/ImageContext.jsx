@@ -73,7 +73,7 @@ const ImageProvider = (props) => {
 		} else {
 			setDate(`sol=${sol}`);
 		}
-	}, [earthDate, sol]);
+	}, [earthDate, sol, dateType]);
 
 	const fetchCameras = async () => {
 		const photos = manifest.photos;
@@ -109,9 +109,19 @@ const ImageProvider = (props) => {
 
 	useEffect(() => {
 		fetchAllImages();
+
+
+
+
+
 	}, [roverName, date]);
 
 
+
+
+
+
+	
 
 	useEffect(() => {
 		const filtered = allImages?.filter((image) => image.camera.name === cam);
@@ -125,7 +135,7 @@ const ImageProvider = (props) => {
 			// setPageCount(Math.ceil(allImages.length / pageSize))
 		}
 		
-	}, [cam, pagination.from, pagination.to]);
+	}, [cam]);
 
 	const paginateData = () =>{
 		setPaginatedImages(images.slice(pagination.from, pagination.to))
@@ -150,17 +160,20 @@ const ImageProvider = (props) => {
 	const handleRover = (event, newRoverName) => {
 		setRoverName(newRoverName);
 		setDate(maxDate);
+		setCam()
 	};
 
 	const handleDate = (event) => {
 		if (event.target.value === "sol") {
 			setDateType("sol");
-			setDate(`sol=${sol}`);
+			setDate(`sol=${maxSol}`);
+			setCam()
 		} else if (event.target.value === "earth_date") {
 			setDateType("earth_date");
-			setDate(`date=${earthDate}`);
+			setDate(`date=${maxDate}`);
+			setCam()
 		}
-		setCam(null);
+		
 	};
 
 	function formatEarthDate(value) {
@@ -299,8 +312,8 @@ const ImageProvider = (props) => {
 		// 	console.log(currentItem)
 		const currentItem = savedSearches[e.target.parentElement.parentElement.id];
 		console.log(currentItem);
-		setRoverName(currentItem.rover);
 		setDateType(currentItem.dateType);
+		setRoverName(currentItem.rover);
 		setDate(currentItem.date);
 		setCam(currentItem.camera);
 	};
