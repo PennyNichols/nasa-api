@@ -1,4 +1,4 @@
-import { inputAdornmentClasses, TextField } from "@mui/material";
+import {  TextField } from "@mui/material";
 import React, { useContext } from "react";
 import { ImageContext } from "../../../context/ImageContext";
 
