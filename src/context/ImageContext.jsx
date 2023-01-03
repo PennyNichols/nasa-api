@@ -29,10 +29,10 @@ const ImageProvider = (props) => {
 			autoClose: 3000,
 		});
 
+	const pageSize = 25;
 	const [manifest, setManifest] = useState("");
 	const [images, setImages] = useState([]);
 	const [allImages, setAllImages] = useState([]);
-	const [pageSize, setPageSize] = useState(25);
 	const [pagination, setPagination] = useState({
 		count: 0,
 		from: 0,
@@ -65,24 +65,24 @@ const ImageProvider = (props) => {
 		window.addEventListener("resize", handleResize);
 	}, []);
 
-	const fetchManifest = async () => {
-		const { data } = await axios.get(manifestUrl);
-		const photos = data.photo_manifest.photos;
-		const maxEarth = data.photo_manifest.max_date;
-		const maxMars = data.photo_manifest.max_sol;
-		const day = photos.find((item) => item.earth_date === maxEarth);
-		const cams = day.cameras;
-		setManifest(data.photo_manifest);
-		setMaxDate(maxEarth);
-		setMaxSol(maxMars);
-		setEarthDate(maxEarth);
-		setSol(maxMars);
-		setCamSelections(cams);
-	};
-
+	
 	useEffect(() => {
+		const fetchManifest = async () => {
+			const { data } = await axios.get(manifestUrl);
+			const photos = data.photo_manifest.photos;
+			const maxEarth = data.photo_manifest.max_date;
+			const maxMars = data.photo_manifest.max_sol;
+			const day = photos.find((item) => item.earth_date === maxEarth);
+			const cams = day.cameras;
+			setManifest(data.photo_manifest);
+			setMaxDate(maxEarth);
+			setMaxSol(maxMars);
+			setEarthDate(maxEarth);
+			setSol(maxMars);
+			setCamSelections(cams);
+		};
 		fetchManifest();
-	}, [roverName]);
+	}, [roverName, manifestUrl]);
 
 	useEffect(() => {
 		if (dateType === "earth_date") {
@@ -92,22 +92,22 @@ const ImageProvider = (props) => {
 		}
 	}, [earthDate, sol, dateType]);
 
-	const fetchCameras = async () => {
-		const photos = manifest.photos;
-		const setDay = (dateType) => {
-			if (dateType === "sol") {
-				return photos?.find((item) => item.sol === +sol);
-			} else {
-				return photos?.find((item) => item.earth_date === earthDate);
-			}
-		};
-		const day = setDay(dateType);
-		setCamSelections(day?.cameras);
-	};
-
+	
 	useEffect(() => {
+		const fetchCameras = async () => {
+			const photos = manifest.photos;
+			const setDay = (dateType) => {
+				if (dateType === "sol") {
+					return photos?.find((item) => item.sol === +sol);
+				} else {
+					return photos?.find((item) => item.earth_date === earthDate);
+				}
+			};
+			const day = setDay(dateType);
+			setCamSelections(day?.cameras);
+		};
 		fetchCameras();
-	}, [date, earthDate, sol]);
+	}, [date, earthDate, sol,dateType,manifest.photos]);
 
 	const fetchAllImages = async () => {
 		if (date !== "earth_date=") {
@@ -135,14 +135,14 @@ const ImageProvider = (props) => {
 		handleCamChange();
 	}, [cam]);
 
-	const paginateData = () => {
-		setPaginatedImages(images.slice(pagination.from, pagination.to));
-		setPagination({ ...pagination, count: Math.ceil(images.length / 25) });
-	};
-
+	
 	useEffect(() => {
+		const paginateData = () => {
+			setPaginatedImages(images.slice(pagination.from, pagination.to));
+			setPagination({ ...pagination, count: Math.ceil(images.length / 25) });
+		};
 		paginateData();
-	}, [images, pagination.to, pagination.from]);
+	}, [images, pagination.to, pagination.from, pagination]);
 
 	const fetchSearches = () => {
 		const searchData = JSON.parse(localStorage.getItem("allSaves")) || [];
@@ -207,8 +207,8 @@ const ImageProvider = (props) => {
 			if (num.slice(6, 8) > 31) {
 				notify(`Please enter a valid date for month ${num.slice(4, 6)} (1-31)`);
 			}
-		} else if (num.slice(4, 6) == "02") {
-			if (num.slice(0, 4) % 4 != 0) {
+		} else if (num.slice(4, 6) === "02") {
+			if (num.slice(0, 4) % 4 !== 0) {
 				if (num.slice(6, 8) > 28) {
 					notify(`Please enter a valid date for a non-leap February (1-28)`);
 				}
@@ -302,7 +302,6 @@ const ImageProvider = (props) => {
 	const handleSavedClick = (event) => {
 		const currentItem =
 			savedSearches[event.target.parentElement.parentElement.id];
-		console.log(currentItem);
 		setDateType(currentItem.dateType);
 		setRoverName(currentItem.rover);
 		setDate(currentItem.date);
@@ -335,7 +334,6 @@ const ImageProvider = (props) => {
 				savedSearches,
 				handleDelete,
 				handleSavedClick,
-				fetchCameras,
 				screenSize,
 			}}
 		>
