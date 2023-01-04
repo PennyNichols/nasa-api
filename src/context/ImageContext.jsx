@@ -41,7 +41,8 @@ const ImageProvider = (props) => {
 	const [activePage, setActivePage] = useState(1);
 	const [paginatedImages, setPaginatedImages] = useState([]);
 	const [sliderIsOpen, setSliderIsOpen] = useState(false);
-	const [clickedIndex, setClickedIndex] = useState('')
+	const [clickedIndex, setClickedIndex] = useState("");
+	const [location, setLocation] = useState(0);
 	const [roverName, setRoverName] = useState("curiosity");
 	const [dateType, setDateType] = useState("earth_date");
 	const [maxDate, setMaxDate] = useState("");
@@ -63,12 +64,11 @@ const ImageProvider = (props) => {
 	useEffect(() => {
 		const handleResize = () => {
 			setScreenSize(window.innerWidth);
-			setScreenHeight(window.innerHeight)
+			setScreenHeight(window.innerHeight);
 		};
 		window.addEventListener("resize", handleResize);
 	}, []);
 
-	
 	useEffect(() => {
 		const fetchManifest = async () => {
 			const { data } = await axios.get(manifestUrl);
@@ -95,7 +95,6 @@ const ImageProvider = (props) => {
 		}
 	}, [earthDate, sol, dateType]);
 
-	
 	useEffect(() => {
 		const fetchCameras = async () => {
 			const photos = manifest.photos;
@@ -110,7 +109,7 @@ const ImageProvider = (props) => {
 			setCamSelections(day?.cameras);
 		};
 		fetchCameras();
-	}, [date, earthDate, sol,dateType,manifest.photos]);
+	}, [date, earthDate, sol, dateType, manifest.photos]);
 
 	const fetchAllImages = async () => {
 		if (date !== "earth_date=") {
@@ -138,7 +137,6 @@ const ImageProvider = (props) => {
 		handleCamChange();
 	}, [cam]);
 
-	
 	useEffect(() => {
 		const paginateData = () => {
 			setPaginatedImages(images.slice(pagination.from, pagination.to));
@@ -262,12 +260,14 @@ const ImageProvider = (props) => {
 	};
 
 	const handlePage = (event, page) => {
+		const galleryLocation =
+			document.getElementsByClassName("gallery")[0].offsetTop;
 		const from = (page - 1) * pageSize;
 		const to = (page - 1) * pageSize + pageSize;
 		setPagination({ ...pagination, from: from, to: to });
-		if (page !== activePage){
+		if (page !== activePage) {
 			setActivePage(page);
-			window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+			window.scrollTo({ top: galleryLocation, left: 0, behavior: "smooth" });
 		}
 	};
 
@@ -311,26 +311,38 @@ const ImageProvider = (props) => {
 		setCam(currentItem.camera);
 	};
 
-	const disableScroll = () =>{
-		document.querySelector('.app').classList.add('disable-scroll')
-	}
+	const disableScroll = () => {
+		document.querySelector(".app").classList.add("disable-scroll");
+	};
 	const enableScroll = () => {
-		document.querySelector('.app').classList.remove('disable-scroll')
-	}
+		document.querySelector(".app").classList.remove("disable-scroll");
+	};
 	const handleImageClick = (event) => {
-		!sliderIsOpen ? disableScroll() : enableScroll()
-		setSliderIsOpen(!sliderIsOpen)
-		const clickedId = event.target.attributes[3].value
-		const index = (images.indexOf(images.find((image)=>image.id === +clickedId)))
-		setClickedIndex(index)
-		window.scrollTo({ top: 0, left: 0});
+		setLocation(event.screenY + screenHeight / 2);
+		disableScroll();
+		setSliderIsOpen(true);
+		const clickedId = event.target.attributes[3].value;
+		const index = images.indexOf(
+			images.find((image) => image.id === +clickedId)
+		);
+		setClickedIndex(index);
+	};
 
-	}
+	const handleSliderClick = () => {
+		setSliderIsOpen(false);
+		enableScroll();
+	};
+
+	useEffect(() => {
+		!sliderIsOpen && window.scrollTo({ top: location, left: 0 });
+	}, [sliderIsOpen, location]);
+
 	return (
 		<ImageContext.Provider
 			value={{
 				images,
 				handleImageClick,
+				handleSliderClick,
 				sliderIsOpen,
 				clickedIndex,
 				manifest,

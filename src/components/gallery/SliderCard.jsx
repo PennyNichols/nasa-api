@@ -1,6 +1,5 @@
 import { Card, CardContent, CardMedia } from "@mui/material";
-import React, { useContext } from "react";
-import { ImageContext } from "../../context/ImageContext";
+import React from "react";
 
 const SliderCard = (props) => {
 	const { img_src, camera, earth_date, rover } = props.image;
@@ -11,11 +10,20 @@ const SliderCard = (props) => {
 			<CardMedia
 				component="img"
 				image={img_src}
-                style={{height:'100vh'}}
+				style={{ height: "100vh" }}
 				alt={`${name}, ${earth_date}, ${full_name}`}
 				className="card-img"
 			/>
-			<CardContent className="card-content" style={{zIndex:'10000',width:'100%', position:'absolute', bottom:'0', backgroundColor: "rgba(0, 0, 0, 0.627)"}}>
+			<CardContent
+				className="card-content"
+				style={{
+					zIndex: "10000",
+					width: "100%",
+					position: "absolute",
+					bottom: "0",
+					backgroundColor: "rgba(0, 0, 0, 0.627)",
+				}}
+			>
 				<p>{name}</p>
 				<p>{earth_date}</p>
 				<p>{full_name}</p>
