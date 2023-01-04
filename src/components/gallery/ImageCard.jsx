@@ -13,7 +13,7 @@ const ImageCard = (props) => {
 
 	return (
 		<Card
-			className="card"
+			className={`card`}
 			style={{ backgroundColor: "rgba(0, 0, 0, 0.627)", paddingBottom: "0" }}
 		>
 			<CardMedia
@@ -29,7 +29,7 @@ const ImageCard = (props) => {
 				<p style={{ marginBottom: "20px" }}>{full_name}</p>
 				<Button
 					variant="outlined"
-					clickedid={clickedId}
+					value={clickedId}
 					onClick={(event) => handleImageClick(event)}
 					style={{
 						position: "absolute",

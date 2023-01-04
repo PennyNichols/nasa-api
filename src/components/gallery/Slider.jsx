@@ -9,11 +9,10 @@ const Slider = () => {
 
 	return (
 		<Carousel
-			onClickItem={(event) => handleSliderClick()}
+			onClickItem={(event) => handleSliderClick(event)}
 			selectedItem={clickedIndex}
 			showIndicators={false}
 			showThumbs={false}
-			style={{ position: "absolute", top: "0", left: "0", height: "100vh" }}
 		>
 			{images?.map((image) => (
 				<SliderCard image={image} key={image.id} />

@@ -53,7 +53,6 @@ const ImageProvider = (props) => {
 	const [cam, setCam] = useState("");
 	const [camSelections, setCamSelections] = useState([]);
 	const [screenSize, setScreenSize] = useState(window.innerWidth);
-	const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 	const [savedSearches, setSavedSearches] = useState([]);
 	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1";
 	const allImagesUrl = `${baseUrl}/rovers/${roverName}/photos?${date}${cam}&api_key=${key}`;
@@ -64,7 +63,6 @@ const ImageProvider = (props) => {
 	useEffect(() => {
 		const handleResize = () => {
 			setScreenSize(window.innerWidth);
-			setScreenHeight(window.innerHeight);
 		};
 		window.addEventListener("resize", handleResize);
 	}, []);
@@ -260,8 +258,7 @@ const ImageProvider = (props) => {
 	};
 
 	const handlePage = (event, page) => {
-		const galleryLocation =
-			document.getElementsByClassName("gallery")[0].offsetTop;
+		const galleryLocation = document.getElementsByClassName('gallery')[0].offsetTop
 		const from = (page - 1) * pageSize;
 		const to = (page - 1) * pageSize + pageSize;
 		setPagination({ ...pagination, from: from, to: to });
@@ -318,10 +315,10 @@ const ImageProvider = (props) => {
 		document.querySelector(".app").classList.remove("disable-scroll");
 	};
 	const handleImageClick = (event) => {
-		setLocation(event.screenY + screenHeight / 2);
+		setLocation(event.pageY - event.clientY);
 		disableScroll();
 		setSliderIsOpen(true);
-		const clickedId = event.target.attributes[3].value;
+		const clickedId = event.target.value;
 		const index = images.indexOf(
 			images.find((image) => image.id === +clickedId)
 		);
@@ -333,9 +330,9 @@ const ImageProvider = (props) => {
 		enableScroll();
 	};
 
-	useEffect(() => {
-		!sliderIsOpen && window.scrollTo({ top: location, left: 0 });
-	}, [sliderIsOpen, location]);
+	useEffect(()=>{
+		!sliderIsOpen && window.scrollTo({top: location, left: 0})
+	},[sliderIsOpen,location])
 
 	return (
 		<ImageContext.Provider
