@@ -40,6 +40,8 @@ const ImageProvider = (props) => {
 	});
 	const [activePage, setActivePage] = useState(1);
 	const [paginatedImages, setPaginatedImages] = useState([]);
+	const [sliderIsOpen, setSliderIsOpen] = useState(false);
+	const [clickedIndex, setClickedIndex] = useState('')
 	const [roverName, setRoverName] = useState("curiosity");
 	const [dateType, setDateType] = useState("earth_date");
 	const [maxDate, setMaxDate] = useState("");
@@ -50,8 +52,8 @@ const ImageProvider = (props) => {
 	const [cam, setCam] = useState("");
 	const [camSelections, setCamSelections] = useState([]);
 	const [screenSize, setScreenSize] = useState(window.innerWidth);
+	const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 	const [savedSearches, setSavedSearches] = useState([]);
-
 	const baseUrl = "https://api.nasa.gov/mars-photos/api/v1";
 	const allImagesUrl = `${baseUrl}/rovers/${roverName}/photos?${date}${cam}&api_key=${key}`;
 	const manifestUrl = `${baseUrl}/manifests/${roverName}/?api_key=${key}`;
@@ -61,6 +63,7 @@ const ImageProvider = (props) => {
 	useEffect(() => {
 		const handleResize = () => {
 			setScreenSize(window.innerWidth);
+			setScreenHeight(window.innerHeight)
 		};
 		window.addEventListener("resize", handleResize);
 	}, []);
@@ -308,10 +311,28 @@ const ImageProvider = (props) => {
 		setCam(currentItem.camera);
 	};
 
+	const disableScroll = () =>{
+		document.querySelector('.app').classList.add('disable-scroll')
+	}
+	const enableScroll = () => {
+		document.querySelector('.app').classList.remove('disable-scroll')
+	}
+	const handleImageClick = (event) => {
+		!sliderIsOpen ? disableScroll() : enableScroll()
+		setSliderIsOpen(!sliderIsOpen)
+		const clickedId = event.target.attributes[3].value
+		const index = (images.indexOf(images.find((image)=>image.id === +clickedId)))
+		setClickedIndex(index)
+		window.scrollTo({ top: 0, left: 0});
+
+	}
 	return (
 		<ImageContext.Provider
 			value={{
 				images,
+				handleImageClick,
+				sliderIsOpen,
+				clickedIndex,
 				manifest,
 				roverOptions,
 				dateTypeOptions,

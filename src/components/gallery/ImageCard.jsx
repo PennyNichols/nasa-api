@@ -1,12 +1,19 @@
-import { Card, CardContent, CardMedia } from "@mui/material";
-import React from "react";
+import { Button, Card, CardContent, CardMedia } from "@mui/material";
+import React, { useContext } from "react";
+import { ImageContext } from "../../context/ImageContext";
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 const ImageCard = (props) => {
-	const { img_src, camera, earth_date, rover } = props.image;
+	const { images, handleImageClick} = useContext(ImageContext);
+
+	const { img_src, camera, earth_date, rover,id } = props.image;
 	const { full_name } = camera;
 	const { name } = rover;
+
+	const clickedId = id
+
 	return (
-		<Card className="card" style={{ backgroundColor: "transparent" }}>
+		<Card className="card" style={{ backgroundColor: "rgba(0, 0, 0, 0.627)", paddingBottom:'0'}}>
 			<CardMedia
 				component="img"
 				height="150px"
@@ -14,10 +21,11 @@ const ImageCard = (props) => {
 				alt={`${name}, ${earth_date}, ${full_name}`}
 				className="card-img"
 			/>
-			<CardContent className="card-content">
+			<CardContent className="card-content" style={{position:'relative' }}>
 				<p>{name}</p>
 				<p>{earth_date}</p>
-				<p>{full_name}</p>
+				<p style={{marginBottom:'20px'}}>{full_name}</p>
+				<Button variant='outlined' clickedid={clickedId} onClick={(event)=>handleImageClick(event)} style={{position:'absolute', bottom:'0', right:'0', padding:'3px', margin:'5px', fontSize:'10px'}}>Full Screen</Button>
 			</CardContent>
 		</Card>
 	);

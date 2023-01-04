@@ -5,7 +5,8 @@ import AppPagination from "./AppPagination";
 import ImageCard from "./ImageCard";
 
 const Gallery = () => {
-	const { images, paginatedImages, screenSize } = useContext(ImageContext);
+	const { images, paginatedImages, screenSize, sliderIsOpen } =
+		useContext(ImageContext);
 	return (
 		<>
 			<Box className="gallery">
@@ -15,7 +16,7 @@ const Gallery = () => {
 							<ImageCard image={image} key={image.id} />
 					  ))}
 			</Box>
-			<AppPagination />
+			{!sliderIsOpen && <AppPagination />}
 		</>
 	);
 };

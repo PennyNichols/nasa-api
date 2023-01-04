@@ -5,6 +5,7 @@ import ImageProvider from './context/ImageContext';
 import { ThemeProvider } from '@mui/material';
 import { theme } from './theme/theme';
 import "react-toastify/dist/ReactToastify.css";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import './index.css';
 
 
