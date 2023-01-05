@@ -28,9 +28,9 @@ const SavedList = () => {
 						onClick={(event) => handleSavedClick(event)}
 						style={{ color: "#ffa6009e", cursor: "pointer" }}
 						primary={`${search.rover.toUpperCase()} - ${
-							search.dateType === "earth_date"
-								? `EARTH:  ${search.date.slice(11)}`
-								: `SOL: ${search.date.slice(4)}`
+							search.type === "earth_date"
+								? `EARTH:  ${search.day.slice(11)}`
+								: `SOL: ${search.day.slice(4)}`
 						} ${
 							search.camera !== null
 								? ` - CAMERA: ${
