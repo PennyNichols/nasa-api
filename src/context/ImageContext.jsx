@@ -50,7 +50,7 @@ const ImageProvider = (props) => {
 	const [date, setDate] = useState(`earth_date=${now}`);
 	const [earthDate, setEarthDate] = useState("");
 	const [sol, setSol] = useState("");
-	const [cam, setCam] = useState("");
+	const [cam, setCam] = useState(null);
 	const [camSelections, setCamSelections] = useState([]);
 	const [screenSize, setScreenSize] = useState(window.innerWidth);
 	const [savedSearches, setSavedSearches] = useState([]);
@@ -90,6 +90,13 @@ const ImageProvider = (props) => {
 			setCamSelections(cams);
 		};
 		fetchManifest();
+
+
+
+// causing problem when clicking a saved search with a different rover name than is currently selected,
+
+
+
 	}, [roverName, manifestUrl]);
 
 
@@ -139,7 +146,6 @@ const ImageProvider = (props) => {
 
 
 // filters the allImages array for all items matching the current cam selection and assigns the new array to the images variable
-// only the data in the images variable is mapped in the gallery, this allows user to change camera selection without sending a new data request
 	const handleCamChange = () => {
 		const filtered = allImages?.filter((image) => image.camera.name === cam);
 		if (cam) {
@@ -194,11 +200,11 @@ const ImageProvider = (props) => {
 		if (event.target.value !== dateType) {
 			if (event.target.value === "sol") {
 				setDateType("sol");
-				setDate(`sol=${maxSol}`);
+				setDate(`sol=${sol}`);
 				setCam();
 			} else if (event.target.value === "earth_date") {
 				setDateType("earth_date");
-				setDate(`date=${maxDate}`);
+				setDate(`date=${earthDate}`);
 				setCam();
 			}
 		}
@@ -300,6 +306,7 @@ const ImageProvider = (props) => {
 	const handleCam = (event) => {
 		if (event.target.value === "null") {
 			setCam();
+			fetchAllImages();
 		} else {
 			setCam(event.target.value);
 			handlePage(null, 1);
@@ -331,8 +338,8 @@ const ImageProvider = (props) => {
 		let entry = {
 			id: v4(),
 			rover: roverName,
-			dateType: dateType,
-			date: date,
+			type: dateType,
+			day: date,
 			camera: cam,
 		};
 		let updatedSaves = [...savedSearches];
@@ -360,13 +367,24 @@ const ImageProvider = (props) => {
 // resets form data to the values for the indicated element in the savedSearches array
 // triggers the useEffect hook that formats the date variable to match what is expected by the api
 // triggers fetchManifest, fetchCameras, fetchAllImages, and handleCamChange functions
-	const handleSavedClick = (event) => {
+	const handleSavedClick = async (event) => {
+
+
+
+// problem here somewhere. saved click changes are not rendering immediately. without axios call, image rendering is delayed by 1 click. date setting on form also delayed 1 click. cam selections not updating.
+
+
 		const currentItem =
 			savedSearches[event.target.parentElement.parentElement.id];
-		setDateType(currentItem.dateType);
-		setRoverName(currentItem.rover);
-		setDate(currentItem.date);
-		setCam(currentItem.camera);
+		const {type, rover, camera, day} = currentItem
+		const { data } = await axios.get(`${baseUrl}/rovers/${rover}/photos?${date}${camera}&api_key=${key}`);
+		setAllImages(data.photos);
+		setImages(data.photos);
+		setDateType(type);
+		setRoverName(rover);
+		setDate(day);
+		setCam(camera);
+		
 	};
 
 // prevents user from scrolling when image is in full screen
