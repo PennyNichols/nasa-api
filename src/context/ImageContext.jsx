@@ -70,7 +70,6 @@ const ImageProvider = (props) => {
 // guarantees the user will not be greeted with an empty gallery 
 // manifest - used to look up camera options by earth date or sol 	
 // manifest - used to look up date ranges for date input validation
-const [listClick, setListClick] = useState(false)
 	useEffect(() => {
 		const fetchManifest = async () => {
 			const { data } = await axios.get(manifestUrl);
@@ -80,15 +79,11 @@ const [listClick, setListClick] = useState(false)
 			const day = photos.find((item) => item.earth_date === maxEarth);
 			const cams = day.cameras;
 			setManifest(data.photo_manifest);
-			if (listClick === false) {
-				setMaxDate(maxEarth);
-				setMaxSol(maxMars);
-				setEarthDate(maxEarth);
-				setSol(maxMars);
-				setCamSelections(cams);
-			} else {
-				setListClick(false)
-			}
+			setMaxDate(maxEarth);
+			setMaxSol(maxMars);
+			setEarthDate(maxEarth);
+			setSol(maxMars);
+			setCamSelections(cams);
 		};
 		fetchManifest();
 	}, [roverName, manifestUrl]);
@@ -387,7 +382,7 @@ const [listClick, setListClick] = useState(false)
 		setRoverName(currentItem.rover);
 		setDate(currentItem.date);
 		setCam(currentItem.camera);
-		setListClick(true)
+		console.log(currentItem.camera)
 	};
 
 
