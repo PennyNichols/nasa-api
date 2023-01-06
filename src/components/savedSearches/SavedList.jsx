@@ -36,7 +36,7 @@ const SavedList = () => {
 						${
               search.camera !== null
                 ? ` - CAMERA: ${
-                    search.camera === undefined ? 'ALL' : search.camera
+                    search.camera === undefined || search.camera === '' ? 'ALL' : search.camera
                   }`
                 : ''
             } `}

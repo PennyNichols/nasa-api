@@ -246,6 +246,7 @@ const ImageProvider = (props) => {
   // triggers the fetchManifest function
   const handleRover = (event, newRoverName) => {
     setRoverName(newRoverName);
+	console.log(event)
     // console.log({ maxDate });
     // setDate(maxDate);
     // setCam('');
