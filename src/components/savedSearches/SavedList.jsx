@@ -26,7 +26,7 @@ const SavedList = () => {
         >
           <ListItemText
             onClick={(event) => handleSavedClick(event)}
-            style={{ color: '#ffa6009e', cursor: 'pointer' }}
+            style={{ color: '#ffa6009e', cursor: 'pointer', userSelect:'none' }}
             primary={`${search.rover.toUpperCase()} - ${
               search.date
               // search.dateType === "earth_date"
