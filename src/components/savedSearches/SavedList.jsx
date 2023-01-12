@@ -29,9 +29,6 @@ const SavedList = () => {
             style={{ color: '#ffa6009e', cursor: 'pointer', userSelect:'none' }}
             primary={`${search.rover.toUpperCase()} - ${
               search.date
-              // search.dateType === "earth_date"
-              // 	? `EARTH:  ${search.date.slice(11)}`
-              // 	: `SOL: ${search.date.slice(4)}`
             } 
 						${
               search.camera !== null
