@@ -3,27 +3,38 @@ import { v4 } from 'uuid';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import debounce from 'lodash.debounce';
+
 export const ImageContext = createContext();
+
 const key = process.env.REACT_APP_NASA_API_KEY;
+
 const ImageProvider = (props) => {
-  let todaysDate = new Date();
-  const year = todaysDate.getFullYear();
-  let month = todaysDate.getMonth();
-  if (month < 9) {
-    month = `0${month + 1}`;
-  } else {
-    month = month + 1;
-  }
-  let today = todaysDate.getDate();
-  if (today < 9) {
-    today = `0${today}`;
-  }
-  const now = `${year}-${month}-${today}`;
+
+// Gets todays date and formats it for the api url
+  // most of the time there are no pictures for the current date
+  // I, instead, made it so the user will always be greeted with the most recent photos
+
+  // let todaysDate = new Date();
+  // const year = todaysDate.getFullYear();
+  // let month = todaysDate.getMonth();
+  // if (month < 9) {
+  //   month = `0${month + 1}`;
+  // } else {
+  //   month = month + 1;
+  // }
+  // let today = todaysDate.getDate();
+  // if (today < 9) {
+  //   today = `0${today}`;
+  // }
+  // const now = `${year}-${month}-${today}`;
+
+// react-toastify customization
   const notify = (message) =>
     toast(message, {
       theme: 'dark',
       autoClose: 3000,
     });
+
   const pageSize = 25;
   const [manifest, setManifest] = useState('');
   const [images, setImages] = useState([]);
@@ -61,26 +72,26 @@ const ImageProvider = (props) => {
     date: '',
     cam: '',
   });
-  // Changes screenSize variable if user resizes window
+
+// Changes screenSize variable if user resizes window
   useEffect(() => {
-    console.log('handle resize');
     const handleResize = () => {
       setScreenSize(window.innerWidth);
     };
     window.addEventListener('resize', handleResize);
   }, []);
-  // retrieve data from the rover manifest
-  // initializes data from the most recent day photos were taken
-  // if photos were taken on the current date, current date photos will be mapped in gallery
-  // guarantees the user will not be greeted with an empty gallery
-  // manifest - used to look up camera options by earth date or sol
-  // manifest - used to look up date ranges for date input validation
+
+// retrieve data from the rover manifest
+// initializes data from the most recent day photos were taken if triggered by clicking a new rover
+// if photos were taken on the current date, current date photos will be mapped in gallery
+// guarantees the user will not be greeted with an empty gallery
+// does not initialize form data if triggered by clicking a saved search
+// manifest - used to look up camera options by earth date or sol
+// manifest - used to look up date ranges for date input validation
   useEffect(() => {
-    console.log('manifest');
     const fetchManifest = async () => {
       const { data } = await axios.get(manifestUrl);
       setIsLoading(false);
-
       const maxEarth = data.photo_manifest.max_date;
       const maxMars = data.photo_manifest.max_sol;
       const photos = data.photo_manifest.photos;
@@ -98,48 +109,31 @@ const ImageProvider = (props) => {
         setCam('');
         fetchAllImages();
       }
-      //   else {
-      //     setDate(savedHistoryData.date);
-      //     setDateType(savedHistoryData.dateType);
-      //     // setEarthDate(maxEarth);
-      //     // setSol(maxMars);
-      //     setCam(savedHistoryData.cam);
-      //     setIsHistory(false);
-      //   }
     };
     setIsLoading(true);
     fetchManifest();
   }, [roverName, manifestUrl]);
 
+// when clicking a saved search after the manifest is loaded
+// check if the current state of date, cam selection, and dateType are equal to the data from the saved search click
+// if it is not, sets the state data
+// ensures the correct images in the gallery and cam selections for the date
   useEffect(() => {
-    console.log('saved history', savedHistoryData, isHistory, isLoading);
     if (isHistory && !isLoading) {
       if (savedHistoryData.date !== date) setDate(savedHistoryData.date);
       else if (savedHistoryData.cam !== cam) setCam(savedHistoryData.cam);
       if (savedHistoryData.dateType !== dateType)
         setDateType(savedHistoryData.dateType);
-      // setIsHistory(false);
     }
   }, [isLoading, isHistory]);
 
-  //  ensures the date variable matches the format expected by the api
-
-  //   useEffect(() => {
-  //     dateType === 'earth_date' ? setDate(earthDate) : setDate(sol);
-  //     console.log({ dateType, earthDate, sol });
-  // if (dateType === 'earth_date') {
-  //   console.log('date updated', `earth_date=${earthDate}`);
-  //   setDate(`earth_date=${earthDate}`);
-  // } else {
-  //   console.log('date updated', `sol=${sol}`);
-  //   setDate(`sol=${sol}`);
-  // }
-  //   }, [earthDate, sol]);
-
-  // use manifest to fetch only available camera selections for the given date
+// manifest.photos - array of days during which data collection occurred
+// searches for data matching the provided date
+// if data exists for the date, sets the cam selections
+// if the current state of sol and earthDate do not match the data from the manifest, change the states to the date values from the selectedDateData
+  // ensures correct images are filtered for the date selected when new date is typed and when a saved search is clicked
   const handleSelectedDateData = () => {
     if (date) {
-      console.log({ date, sol, earthDate });
       const photos = manifest.photos;
       const selectedDateData =
         dateType === 'sol'
@@ -150,39 +144,22 @@ const ImageProvider = (props) => {
         if (sol !== selectedDateData?.sol) setSol(selectedDateData?.sol);
         if (earthDate !== selectedDateData?.earth_date)
           setEarthDate(selectedDateData?.earth_date);
-        console.log({ date, dateType, sol, earthDate, selectedDateData });
       }
     }
   };
 
   useEffect(() => {
-    // const fetchCameras = async () => {
-    //   const photos = manifest.photos;
-    //   const setDay = (dateType) => {
-    //     if (dateType === 'sol') {
-    //       return photos?.find((item) => item.sol === +sol);
-    //     } else {
-    //       return photos?.find((item) => item.earth_date === earthDate);
-    //     }
-    //   };
-    //   const day = setDay(dateType);
-    //   setCamSelections(day?.cameras);
-    // };
-    // fetchCameras();
-    console.log('handle selected date data');
-
     handleSelectedDateData();
   }, [date, dateType, manifest.photos]);
-  // fetches image data for the indicated date
-  // sets both AllImages and images variables to the resulting data array
+
+// fetches image data for the indicated date
+// sets both AllImages and images variables to the resulting data array
   const fetchAllImages = async () => {
     if (date) {
-      console.log({ date, isHistory, isLoading, allImagesUrl });
       const { data } = await axios.get(allImagesUrl);
       setAllImages(data.photos);
       setImages(data.photos);
 
-      // if (cam) handleCamChange();
       if (isHistory && !isLoading) {
         setIsHistory(false);
         console.log({ cam });
@@ -190,18 +167,15 @@ const ImageProvider = (props) => {
       }
     }
   };
-  // triggers new image fetch each time a new rover or date is selected
-  // does not work if fetchAllImages function is moved inside the useEffect.
+
   useEffect(() => {
-    console.log('fetch images');
     fetchAllImages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
-  // filters the allImages array for all items matching the current cam selection and assigns the new array to the images variable
-  // only the data in the images variable is mapped in the gallery, this allows user to change camera selection without sending a new data request
+// filters the allImages array for all items matching the current cam selection and assigns the new array to the images variable
+// only the data in the images variable is mapped in the gallery, this allows user to change camera selection without sending a new data request
   const handleCamChange = () => {
-    // if (!isHistory)
     if (cam) {
       const filtered = allImages?.filter((image) => image.camera.name === cam);
       setImages(filtered);
@@ -210,19 +184,19 @@ const ImageProvider = (props) => {
     }
     if (isHistory) setIsHistory(false);
   };
-  // triggers handleCamChange function each time a new camera selection is made
-  // does not work if function is defined inside the useEffect
+
+// triggers handleCamChange function each time a new camera selection is made
+// does not work if function is defined inside the useEffect
   useEffect(() => {
-    console.log('cam change');
     handleCamChange();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cam]);
-  // allows conditional rendering to provide dynamic loading (pagination on large screens, continuous scroll on mobile)
-  // paginatedImages array is created from a slice of the existing images array
-  // pagination is dynamic based on pageSize variable
-  // pageSize variable could be turned into a state to allow the user to choose how many results to show per page (assignment indicated max of 25, so I did not add the extra feature)
+
+// allows conditional rendering to provide dynamic loading (pagination on large screens, continuous scroll on mobile)
+// paginatedImages array is created from a slice of the existing images array
+// pagination is dynamic based on pageSize variable
+// pageSize variable could be turned into a state to allow the user to choose how many results to show per page (assignment indicated max of 25, so I did not add the extra feature)
   useEffect(() => {
-    console.log('pagination');
     const paginateData = () => {
       setPaginatedImages(images.slice(pagination.from, pagination.to));
       setPagination({
@@ -231,49 +205,45 @@ const ImageProvider = (props) => {
       });
     };
     paginateData();
+// eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, pagination.to, pagination.from]);
-  // recalls saved searches from local storage to be mapped in the DOM for user selection of previously saved searches
+
+
+// recalls saved searches from local storage to be mapped in the DOM for user selection of previously saved searches
   const fetchSearches = () => {
     const searchData = JSON.parse(localStorage.getItem('allSaves')) || [];
     setSavedSearches(searchData);
   };
-  // fetches previously saved searches at initial load
+
+// fetches previously saved searches at initial load
   useEffect(() => {
-    console.log('fetch search');
     fetchSearches();
   }, []);
-  // handles user selection of rover
-  // triggers the fetchManifest function
+
+// handles user selection of rover
+// triggers the fetchManifest function
   const handleRover = (event, newRoverName) => {
     setRoverName(newRoverName);
-	console.log(event)
-    // console.log({ maxDate });
-    // setDate(maxDate);
-    // setCam('');
   };
-  // handles user selection of date type
-  // triggers the useEffect hook that formats the date variable to match what is expected by the api
-  // triggers fetchCameras, fetchAllImages, and handleCamChange functions
+
+// handles user selection of date type
+// triggers the useEffect hook that formats the date variable to match what is expected by the api
+// triggers fetchCameras, fetchAllImages, and handleCamChange functions
   const handleDate = (event) => {
     if (event.target.value !== dateType) {
       if (event.target.value === 'sol') {
         setDateType('sol');
-        // console.log('date updated', `sol=${maxSol}`);
-        // setDate(maxSol);
-        // setCam("");
       } else if (event.target.value === 'earth_date') {
         setDateType('earth_date');
-        // console.log('date updated', `date=${maxDate}`);
-        // setDate(maxDate);
-        // setCam("");
       }
     }
   };
-  // prevents user from entering invalid dates
-  // does not allow invalid characters
-  // provides feedback to the user when attempting to make invalid entry
-  // automatically formats the date as the user types to match what is expected by the api
-  // provides a toast outlining how to fix entry errors
+
+// prevents user from entering invalid dates
+// does not allow invalid characters
+// provides feedback to the user when attempting to make invalid entry
+// automatically formats the date as the user types to match what is expected by the api
+// provides a toast outlining how to fix entry errors
   const formatEarthDate = (value) => {
     if (!value) return value;
     const num = value.replace(/[^\d]/g, '');
@@ -326,55 +296,56 @@ const ImageProvider = (props) => {
     return `${num.slice(0, 4)}-${num.slice(4, 6)}-${num.slice(6, 8)}`;
   };
 
+// prevents effects of date input from taking effect for 1 second after the user stops typing
+// prevents data fetch from every keystroke
   const debounceDateChange = useRef(
     debounce((input) => {
-      console.log('debounce', { sol, earthDate, input });
       setDate(input);
-      // dateType === 'sol' ? setDate(sol) : setDate(earthDate);
       setCam('');
     }, 1000)
   ).current;
 
+// resets debounce so effects will take place 1 second after last keystroke instead of 1 second after every keystroke
   useEffect(() => {
     return () => {
       debounceDateChange.cancel();
     };
   }, [debounceDateChange]);
-  // handles user input to date field when earth date option is selected
-  // triggers formatEarthDate fetchCameras, fetchAllImages, and handleCamChange functions
-  // triggers the useEffect hook that formats the date variable to match what is expected by the api
+
+// handles user input to date field when earth date option is selected
+// triggers formatEarthDate fetchCameras, fetchAllImages, and handleCamChange functions
+// triggers the useEffect hook that formats the date variable to match what is expected by the api
   const handleEarthDate = (event) => {
     const formattedDate = formatEarthDate(event.target.value);
     setEarthDate(formattedDate);
     debounceDateChange(event.target.value);
-    // setDate(formattedDate);
-    // setCam('');
   };
-  // prevents user from entering invalid dates
-  // does not allow invalid characters
-  // provides feedback to the user when attempting to make invalid entry
-  // automatically formats the date as the user types to match what is expected by the api
-  // provides a toast outlining how to fix entry errors
+
+// prevents user from entering invalid dates
+// does not allow invalid characters
+// provides feedback to the user when attempting to make invalid entry
+// automatically formats the date as the user types to match what is expected by the api
+// provides a toast outlining how to fix entry errors
   const formatSolDate = (value) => {
     if (!value) return value;
     const num = value.replace(/[^\d]/g, '');
-    if (num < 0 || num > manifest.max_sol) {
-      notify(`Please enter a valid Sol date between 0 and ${manifest.max_sol}`);
+    if (num < 0 || num > maxSol) {
+      notify(`Please enter a valid Sol date between 0 and ${maxSol}`);
     }
     return num;
   };
-  // handles user input to date field when sol option is selected
-  // triggers formatSolDate fetchCameras, fetchAllImages, and handleCamChange functions
-  // triggers the useEffect hook that formats the date variable to match what is expected by the api
+
+// handles user input to date field when sol option is selected
+// triggers formatSolDate fetchCameras, fetchAllImages, and handleCamChange functions
+// triggers the useEffect hook that formats the date variable to match what is expected by the api
   const handleSolDate = (event) => {
     const formattedDate = formatSolDate(event.target.value);
     setSol(formattedDate);
     debounceDateChange(event.target.value);
-    // setDate(formattedDate);
-    // setCam('');
   };
-  // handles user selection of camera
-  // triggers handleCamChange function to filter images specifically taken by the selected camera
+
+// handles user selection of camera
+// triggers handleCamChange function to filter images specifically taken by the selected camera
   const handleCam = (event) => {
     if (event.target.value === 'null') {
       setCam('');
@@ -383,9 +354,10 @@ const ImageProvider = (props) => {
       handlePage(null, 1);
     }
   };
-  // handles user interaction with pagination component
-  // dynamically sets the slice of the images data array mapped in the gallery
-  // scrolls user to the top of the gallery when a new page is selected
+
+// handles user interaction with pagination component
+// dynamically sets the slice of the images data array mapped in the gallery
+// scrolls user to the top of the gallery when a new page is selected
   const handlePage = (event, page) => {
     const galleryLocation =
       document.getElementsByClassName('gallery')[0].offsetTop;
@@ -397,12 +369,14 @@ const ImageProvider = (props) => {
       window.scrollTo({ top: galleryLocation, left: 0, behavior: 'smooth' });
     }
   };
-  // returns user to the top of the page
-  // button only rendered on small screen sizes without pagination
+
+// returns user to the top of the page
+// button only rendered on small screen sizes without pagination
   const returnToTop = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
-  // saves current search values to local storage
+
+// saves current search values to local storage
   const saveSearch = () => {
     let entry = {
       id: v4(),
@@ -416,9 +390,10 @@ const ImageProvider = (props) => {
     setSavedSearches(updatedSaves);
     localStorage.setItem('allSaves', JSON.stringify(updatedSaves));
   };
-  // finds the indicated item to remove by indexing savedSearches array
-  // creates a newSavedSearches array to store all items in savedSearches array that do not match the indicated item to remove
-  // stores new savedSearches array in local storage
+
+// finds the indicated item to remove by indexing savedSearches array
+// creates a newSavedSearches array to store all items in savedSearches array that do not match the indicated item to remove
+// stores new savedSearches array in local storage
   const handleDelete = (event, id) => {
     const itemToRemove =
       savedSearches[
@@ -431,11 +406,11 @@ const ImageProvider = (props) => {
     localStorage.setItem('allSaves', JSON.stringify(newSavedSearches));
     fetchSearches();
   };
-  // resets form data to the values for the indicated element in the savedSearches array
-  // triggers the useEffect hook that formats the date variable to match what is expected by the api
-  // triggers fetchManifest, fetchCameras, fetchAllImages, and handleCamChange functions
+
+  // sets rover and triggers manifest fetch
+  // sets savedHistoryData to the clicked data
+  // triggers the useEffect to set form data to savedHistoryData after manifest data has been received 
   const handleSavedClick = (event) => {
-	  console.log('clicked history', isHistory, isLoading);
     const currentItem =
       savedSearches[event.target.parentElement.parentElement.id];
     if (isHistory) setIsHistory(false);
@@ -447,19 +422,18 @@ const ImageProvider = (props) => {
       cam: currentItem.camera,
     });
 	handlePage(null,1)
-    // setDateType(currentItem.dateType);
-    // setDate(currentItem.date);
-    // setCam(currentItem.camera);
   };
 
   // prevents user from scrolling when image is in full screen
   const disableScroll = () => {
     document.querySelector('.app').classList.add('disable-scroll');
   };
+
   // allows user to scroll after exiting image full screen
   const enableScroll = () => {
     document.querySelector('.app').classList.remove('disable-scroll');
   };
+
   // opens image to full screen when the user clicks an item
   // carousel opens at the top of the page
   // location variable is set to return the user to the same location they were on the page when the item was clicked
@@ -475,17 +449,19 @@ const ImageProvider = (props) => {
     );
     setClickedIndex(index);
   };
+
   // closes the slider
   // triggers enableScroll function
   const handleSliderClick = () => {
     setSliderIsOpen(false);
     enableScroll();
   };
+
   // returns the user to the image they clicked on when closing full screen view
   useEffect(() => {
-    console.log('slider');
     !sliderIsOpen && window.scrollTo({ top: location, left: 0 });
   }, [sliderIsOpen, location]);
+
   return (
     <ImageContext.Provider
       value={{
