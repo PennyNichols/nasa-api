@@ -150,6 +150,7 @@ const ImageProvider = (props) => {
 
   useEffect(() => {
     handleSelectedDateData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, dateType, manifest.photos]);
 
 // fetches image data for the indicated date
